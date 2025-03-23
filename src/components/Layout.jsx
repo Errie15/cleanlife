@@ -27,37 +27,37 @@ const Layout = ({ children, onCategoryChange }) => {
     { 
       id: 'all', 
       name: 'Alla Uppgifter',
-      icon: <FaListUl size={20} />
+      icon: <FaListUl size={16} />
     },
     { 
       id: 'mat', 
       name: 'Mat',
-      icon: <FaUtensils size={20} />
+      icon: <FaUtensils size={16} />
     },
     { 
       id: 'stad', 
       name: 'Städning',
-      icon: <FaBroom size={20} />
+      icon: <FaBroom size={16} />
     },
     { 
       id: 'sickan', 
       name: 'Sickan',
-      icon: <FaPaw size={20} />
+      icon: <FaPaw size={16} />
     },
     { 
       id: 'tvatt', 
       name: 'Tvätt',
-      icon: <FaTshirt size={20} />
+      icon: <FaTshirt size={16} />
     },
     { 
       id: 'major', 
       name: 'Projekt',
-      icon: <FaProjectDiagram size={20} />
+      icon: <FaProjectDiagram size={16} />
     },
     { 
       id: 'rewards', 
       name: 'Belöningar',
-      icon: <FaGift size={20} />
+      icon: <FaGift size={16} />
     }
   ];
 
@@ -102,13 +102,13 @@ const Layout = ({ children, onCategoryChange }) => {
         </div>
         
         {/* Navigation Categories */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <nav className="flex space-x-1 overflow-x-auto scrollbar-hide">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
+          <nav className="flex space-x-0.5 overflow-x-auto scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => handleCategoryChange(category.id)}
-                className={`p-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors flex items-center justify-center ${
+                className={`p-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-colors flex items-center justify-center ${
                   activeCategory === category.id
                     ? 'bg-purple-100 text-purple-800 shadow-sm'
                     : 'text-gray-700 hover:text-purple-800 hover:bg-purple-50'
