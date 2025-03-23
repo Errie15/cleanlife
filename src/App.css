@@ -323,7 +323,7 @@ button:active:not(:disabled) {
   transition: height 0.3s ease-in-out;
   overflow-y: auto;
   margin-bottom: 0;
-  max-height: 14rem; /* Begränsa maximal höjd även på större skärmar */
+  max-height: 10rem !important; /* Begränsa maximal höjd även på större skärmar och använd !important för att åsidosätta inline-stilar */
 }
 
 /* Säkerställer att övriga element inte täcks av chatt */
@@ -366,7 +366,7 @@ footer {
   .chat-messages-container {
     max-width: 100%;
     height: auto !important;
-    max-height: 10rem !important; /* Mindre höjd på mobila enheter */
+    max-height: 8rem !important; /* Mindre höjd på mobila enheter */
   }
   
   /* Säkerställ att footer visas korrekt på mobila enheter */
@@ -393,7 +393,7 @@ footer {
   .chat-messages-container {
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
-    max-height: 8rem !important; /* Ännu mindre höjd på iPhone */
+    max-height: 6rem !important; /* Ännu mindre höjd på iPhone */
   }
 }
 
