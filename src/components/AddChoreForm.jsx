@@ -4,9 +4,11 @@ import { FREQUENCY, CATEGORY, generateId } from '../models/chores';
 // Component for adding a new chore
 const AddChoreForm = ({ onAddChore, onCancel }) => {
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState(CATEGORY.DAILY);
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState(CATEGORY.MAT);
   const [frequency, setFrequency] = useState(FREQUENCY.WEEKLY);
   const [points, setPoints] = useState(5);
+  const [assignedTo, setAssignedTo] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,9 +22,10 @@ const AddChoreForm = ({ onAddChore, onCancel }) => {
     const newChore = {
       id: generateId(),
       title: title.trim(),
+      description: description.trim(),
       category,
       frequency,
-      assignedTo: null, // Will be assigned based on week
+      assignedTo, // Allow directly assigning to a user
       status: 'pending',
       createdAt: new Date().toISOString(),
       ...(category === CATEGORY.MAJOR && { points: Number(points) })
@@ -34,9 +37,11 @@ const AddChoreForm = ({ onAddChore, onCancel }) => {
   
   const resetForm = () => {
     setTitle('');
-    setCategory(CATEGORY.DAILY);
+    setDescription('');
+    setCategory(CATEGORY.MAT);
     setFrequency(FREQUENCY.WEEKLY);
     setPoints(5);
+    setAssignedTo(null);
   };
 
   return (
@@ -54,8 +59,22 @@ const AddChoreForm = ({ onAddChore, onCancel }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Ex: Dammsuga"
+            placeholder="Ex: Handla mat"
             required
+          />
+        </div>
+        
+        <div className="mb-3">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            Beskrivning (valfritt)
+          </label>
+          <input
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Ex: Mån-tor"
           />
         </div>
         
@@ -69,6 +88,10 @@ const AddChoreForm = ({ onAddChore, onCancel }) => {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
+            <option value={CATEGORY.MAT}>Mat</option>
+            <option value={CATEGORY.STAD}>Städ</option>
+            <option value={CATEGORY.TVATT}>Tvätt</option>
+            <option value={CATEGORY.SICKAN}>Sickan Morgon</option>
             <option value={CATEGORY.DAILY}>Vardaglig</option>
             <option value={CATEGORY.MAJOR}>Större uppgift</option>
           </select>
@@ -85,9 +108,26 @@ const AddChoreForm = ({ onAddChore, onCancel }) => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value={FREQUENCY.ONCE}>Engångs</option>
+            <option value={FREQUENCY.DAILY}>Dagligen</option>
             <option value={FREQUENCY.WEEKLY}>Varje vecka</option>
             <option value={FREQUENCY.BIWEEKLY}>Varannan vecka</option>
             <option value={FREQUENCY.MONTHLY}>Månadsvis</option>
+          </select>
+        </div>
+        
+        <div className="mb-3">
+          <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700 mb-1">
+            Tilldela (valfritt)
+          </label>
+          <select
+            id="assignedTo"
+            value={assignedTo || ""}
+            onChange={(e) => setAssignedTo(e.target.value || null)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Välj person</option>
+            <option value="user1">Erik</option>
+            <option value="user2">Linnea</option>
           </select>
         </div>
         

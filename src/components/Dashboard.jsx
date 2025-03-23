@@ -146,9 +146,15 @@ const Dashboard = () => {
   };
   
   // Filter chores by status and type
-  const pendingChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.DAILY);
+  const pendingDailyChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.DAILY);
   const completedChores = chores.filter(chore => chore.status === 'completed');
   const majorChores = chores.filter(chore => chore.category === CATEGORY.MAJOR && chore.status === 'pending');
+  
+  // Filter chores by new categories
+  const matChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.MAT);
+  const stadChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.STAD);
+  const tvattChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.TVATT);
+  const sickanChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.SICKAN);
   
   // Get current user
   const currentUser = users.find(user => user.id === currentUserId);
@@ -189,53 +195,79 @@ const Dashboard = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Weekly chores column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-indigo-50 to-white">
+        {/* Mat column */}
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-amber-50 to-white">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-indigo-500 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-500 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
-              Denna vecka
+              Mat
             </h3>
-            <button
-              onClick={() => setShowAddChoreForm(!showAddChoreForm)}
-              className="flex items-center px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
-            >
-              {showAddChoreForm ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Avbryt
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Lägg till
-                </>
-              )}
-            </button>
           </div>
           
-          {showAddChoreForm ? (
-            <AddChoreForm 
-              onAddChore={handleAddChore} 
-              onCancel={() => setShowAddChoreForm(false)} 
-            />
-          ) : (
-            <ChoresList
-              title="Pågående"
-              chores={pendingChores}
-              users={users}
-              onComplete={handleCompleteChore}
-              onDelete={handleDeleteChore}
-            />
-          )}
+          <ChoresList
+            title="Matuppgifter"
+            chores={matChores}
+            users={users}
+            onComplete={handleCompleteChore}
+            onDelete={handleDeleteChore}
+          />
         </div>
         
+        {/* Städ column */}
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-blue-50 to-white">
+          <div className="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-500">Städ</h3>
+          </div>
+          <ChoresList
+            title="Städuppgifter"
+            chores={stadChores}
+            users={users}
+            onComplete={handleCompleteChore}
+            onDelete={handleDeleteChore}
+          />
+        </div>
+        
+        {/* Tvätt column */}
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-indigo-50 to-white">
+          <div className="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+            </svg>
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-indigo-500">Tvätt</h3>
+          </div>
+          <ChoresList
+            title="Tvättuppgifter"
+            chores={tvattChores}
+            users={users}
+            onComplete={handleCompleteChore}
+            onDelete={handleDeleteChore}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {/* Sickan column */}
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-pink-50 to-white">
+          <div className="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-700 to-pink-500">Sickan Morgon</h3>
+          </div>
+          <ChoresList
+            title="Morgonrutiner"
+            chores={sickanChores}
+            users={users}
+            onComplete={handleCompleteChore}
+            onDelete={handleDeleteChore}
+          />
+        </div>
+
         {/* Completed chores column */}
         <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-green-50 to-white">
           <div className="flex items-center mb-4">
@@ -253,14 +285,14 @@ const Dashboard = () => {
           />
         </div>
         
-        {/* Rewards & Major tasks column */}
+        {/* Rewards column */}
         <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Djup städning
+              Belöningar
             </h3>
             <button
               onClick={() => setShowAddRewardForm(!showAddRewardForm)}
@@ -290,36 +322,43 @@ const Dashboard = () => {
               onCancel={() => setShowAddRewardForm(false)} 
             />
           ) : (
-            <>
-              <ChoresList
-                title="Större uppgifter"
-                chores={majorChores}
-                users={users}
-                onComplete={handleCompleteChore}
-                onDelete={handleDeleteChore}
-              />
-              
-              <div className="mt-5">
-                <div className="flex items-center mb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                  </svg>
-                  <h4 className="text-lg font-medium text-gray-800">Belöningar</h4>
-                </div>
-                <RewardsList
-                  rewards={rewards}
-                  users={users}
-                  currentUserId={currentUserId}
-                  userPoints={userPoints}
-                  onClaim={handleClaimReward}
-                  onDelete={handleDeleteReward}
-                />
-              </div>
-            </>
+            <RewardsList
+              rewards={rewards}
+              users={users}
+              currentUserId={currentUserId}
+              userPoints={userPoints}
+              onClaim={handleClaimReward}
+              onDelete={handleDeleteReward}
+            />
           )}
         </div>
       </div>
       
+      {/* Section for adding new chores */}
+      <div className="mt-6 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-gray-50 to-white">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-gray-500 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Lägg till ny uppgift
+          </h3>
+          <button
+            onClick={() => setShowAddChoreForm(!showAddChoreForm)}
+            className="flex items-center px-3 py-1.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+          >
+            {showAddChoreForm ? "Avbryt" : "Lägg till uppgift"}
+          </button>
+        </div>
+        
+        {showAddChoreForm && (
+          <AddChoreForm 
+            onAddChore={handleAddChore} 
+            onCancel={() => setShowAddChoreForm(false)} 
+          />
+        )}
+      </div>
+
       {/* Chat section */}
       <div className="mt-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-5 border border-gray-200 animate-fade-in chat-container">
         <Chat

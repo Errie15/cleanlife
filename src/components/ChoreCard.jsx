@@ -3,7 +3,7 @@ import { CATEGORY, FREQUENCY } from '../models/chores';
 
 // Component to display a single chore
 const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
-  const { id, title, category, frequency, status, assignedTo, points, completedAt } = chore;
+  const { id, title, description, category, frequency, status, assignedTo, points, completedAt } = chore;
   
   // Find the assigned user object
   const assignedUser = users.find(user => user.id === assignedTo);
@@ -28,6 +28,28 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
     pink: 'bg-pink-100 text-pink-800 border-pink-200'
   };
   
+  // Get category label and color
+  const getCategoryInfo = (cat) => {
+    switch(cat) {
+      case CATEGORY.MAT:
+        return { label: 'Mat', colorClass: 'bg-amber-100 text-amber-800' };
+      case CATEGORY.STAD:
+        return { label: 'Städ', colorClass: 'bg-blue-100 text-blue-800' };
+      case CATEGORY.TVATT:
+        return { label: 'Tvätt', colorClass: 'bg-indigo-100 text-indigo-800' };
+      case CATEGORY.SICKAN:
+        return { label: 'Sickan', colorClass: 'bg-pink-100 text-pink-800' };
+      case CATEGORY.DAILY:
+        return { label: 'Vardaglig', colorClass: 'bg-indigo-100 text-indigo-800' };
+      case CATEGORY.MAJOR:
+        return { label: 'Större uppgift', colorClass: 'bg-purple-100 text-purple-800' };
+      default:
+        return { label: 'Övrig', colorClass: 'bg-gray-100 text-gray-800' };
+    }
+  };
+  
+  const categoryInfo = getCategoryInfo(category);
+  
   return (
     <div 
       className={`bg-white rounded-lg shadow-sm hover:shadow-md 
@@ -39,17 +61,19 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
         <div className="flex justify-between items-start">
           <div className="flex-1 pr-4">
             <h3 className="font-medium text-lg text-gray-800">{title}</h3>
+            
+            {description && (
+              <p className="text-sm text-gray-600 mt-1">{description}</p>
+            )}
+            
             <div className="flex flex-wrap gap-2 my-2">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                category === CATEGORY.DAILY 
-                  ? 'bg-indigo-100 text-indigo-800' 
-                  : 'bg-purple-100 text-purple-800'
-              }`}>
-                {category === CATEGORY.DAILY ? 'Vardaglig' : 'Större uppgift'}
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${categoryInfo.colorClass}`}>
+                {categoryInfo.label}
               </span>
               
               <span className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
                 {frequency === FREQUENCY.ONCE ? 'Engångs' : 
+                  frequency === FREQUENCY.DAILY ? 'Dagligen' :
                   frequency === FREQUENCY.WEEKLY ? 'Varje vecka' :
                   frequency === FREQUENCY.BIWEEKLY ? 'Varannan vecka' : 'Månadsvis'}
               </span>
