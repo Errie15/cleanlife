@@ -73,7 +73,7 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Sickan's Schedule
+          Sickan's Daily Schedule
         </h2>
         <button
           onClick={() => setEditMode(!editMode)}
@@ -89,7 +89,7 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
 
       {/* Today's schedule - for quick reference */}
       <div className="px-6 py-4 bg-purple-50">
-        <h3 className="text-md font-medium text-purple-800 mb-3">Today's Schedule</h3>
+        <h3 className="text-md font-medium text-purple-800 mb-3">Today's Walks & Care</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {todayEntries.map(entry => (
             <div 

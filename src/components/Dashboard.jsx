@@ -164,7 +164,7 @@ const Dashboard = () => {
   
   // Show schedule based on activeCategory
   const showSchedule = useMemo(() => {
-    return activeCategory === 'schedule' || activeCategory === 'all';
+    return activeCategory === 'sickan' || activeCategory === 'all';
   }, [activeCategory]);
   
   // Group chores by status for display
