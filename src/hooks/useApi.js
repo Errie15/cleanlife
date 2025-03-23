@@ -52,7 +52,7 @@ const useApi = (endpoint, defaultValue = []) => {
         let currentApiUrl;
         
         if (process.env.NODE_ENV === 'production') {
-          currentApiUrl = 'https://cleanlife-api.vercel.app';
+          currentApiUrl = 'https://cleanlife-db.vercel.app';
         } else {
           // Använd tidigare fungerande port om sådan finns
           currentApiUrl = window.API_URL_OVERRIDE || 'http://localhost:3001';
@@ -163,7 +163,7 @@ const useApi = (endpoint, defaultValue = []) => {
         return window.API_URL_OVERRIDE;
       }
       return process.env.NODE_ENV === 'production' 
-        ? 'https://cleanlife-api.vercel.app' 
+        ? 'https://cleanlife-db.vercel.app' 
         : 'http://localhost:3001';
     };
     
