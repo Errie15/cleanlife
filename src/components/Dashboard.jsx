@@ -27,6 +27,52 @@ const Dashboard = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   
+  // Samla alla API-fel
+  const apiErrors = [usersError, choresError, messagesError, scheduleError].filter(Boolean);
+  const isLoading = usersLoading || choresLoading || messagesLoading || scheduleLoading;
+  
+  // Visa felmeddelande om något API-anrop misslyckas
+  if (apiErrors.length > 0 && !isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 to-red-100">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+          <div className="text-red-500 mb-4 text-5xl">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Ett fel uppstod vid laddning av data</h2>
+          <p className="text-gray-600 mb-6">
+            Det verkar som att API-servern inte körs eller inte är tillgänglig. 
+            <br />
+            Fel: {apiErrors[0]}
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
+          >
+            Försök igen
+          </button>
+          <p className="mt-4 text-sm text-gray-500">
+            Kontrollera att API-servern körs med <code className="bg-gray-100 px-2 py-1 rounded">npm run dev</code> i api-mappen.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Visa laddningsindikator om data fortfarande laddas
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin mb-3 inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+          <div className="text-xl font-semibold text-gray-800 mb-2">Laddar data...</div>
+        </div>
+      </div>
+    );
+  }
+  
   // Notifications
   const { notifyChoreCompleted } = useNotifications();
   
@@ -217,36 +263,6 @@ const Dashboard = () => {
     }
   }, [users, usersLoading, currentUserId]);
 
-  // Kontrollera om data fortfarande laddas
-  const isLoading = usersLoading || choresLoading || messagesLoading || scheduleLoading;
-  const hasError = usersError || choresError || messagesError || scheduleError;
-
-  // Om data fortfarande laddas, visa en laddningsindikator
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-2xl font-bold text-primary">Laddar...</div>
-      </div>
-    );
-  }
-  
-  // Om det finns fel, visa felmeddelande
-  if (hasError) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-2xl font-bold text-red-500">
-          Ett fel uppstod vid laddning av data.<br/>
-          <button 
-            className="mt-4 bg-primary text-white px-4 py-2 rounded"
-            onClick={() => window.location.reload()}
-          >
-            Försök igen
-          </button>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <Layout onCategoryChange={setActiveCategory}>
       <div className={`grid grid-cols-1 ${activeCategory !== 'sickan' ? 'lg:grid-cols-1' : ''} gap-6`}>
