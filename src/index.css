@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Load Inter font */
+@import url('https://rsms.me/inter/inter.css');
 
 :root {
   font-family: 'Inter var', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
@@ -85,6 +87,3 @@ html {
     background-color: #0369a1;
   }
 }
-
-/* Load Inter font */
-@import url('https://rsms.me/inter/inter.css');
