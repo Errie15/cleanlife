@@ -89,7 +89,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative mb-8">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,7 +113,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
         </div>
       </div>
       
-      <div className="flex-1 bg-white rounded-xl border border-gray-200 mb-4 overflow-hidden shadow-sm">
+      <div className="flex-1 bg-white rounded-t-xl border border-gray-200 overflow-hidden shadow-sm">
         <div 
           ref={chatContainerRef}
           className={`${isChatExpanded ? 'h-96' : 'h-56'} md:h-auto max-h-96 overflow-y-auto p-4 space-y-6 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
@@ -181,7 +181,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
         </div>
       </div>
       
-      <form onSubmit={handleSubmit} className="flex sticky bottom-0 bg-white p-3 rounded-xl shadow-md chat-input-container border-t border-purple-100">
+      <form onSubmit={handleSubmit} className="flex bg-white p-3 rounded-b-xl shadow-md chat-input-container border-t border-purple-100">
         <button
           type="button"
           onClick={() => setShowEmoji(!showEmoji)}

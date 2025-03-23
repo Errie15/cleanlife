@@ -322,24 +322,42 @@ button:active:not(:disabled) {
 .chat-messages-container {
   transition: height 0.3s ease-in-out;
   overflow-y: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 0; /* Ta bort margin-bottom för att undvika mellanrum */
 }
 
 /* Säkerställer att övriga element inte täcks av chatt */
 main {
-  padding-bottom: 6rem; /* Extra utrymme i botten av sidan */
+  padding-bottom: 0; /* Ta bort padding-bottom för att footern ska hamna direkt efter innehållet */
+  position: relative;
+  z-index: 1;
+}
+
+/* Garanterar att footer alltid visas korrekt */
+footer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: 2rem; /* Lägg till margin-top istället för att använda padding-bottom på main */
+}
+
+/* Integrerad chat-design med formuläret direkt under meddelanden */
+.chat-input-container {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 /* Förbättrad chattstil */
 .emoji-picker {
   z-index: 50;
   position: absolute;
-  bottom: 14;
+  bottom: 100%; /* Placera ovanför input istället för med absolut värde */
   left: 0;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid rgb(229, 231, 235);
+  margin-bottom: 0.5rem;
 }
 
 /* Förhindra att chatten blir för bred på mindre skärmar */
@@ -348,5 +366,36 @@ main {
     max-width: 100%;
     height: auto !important;
     max-height: 16rem !important;
+  }
+  
+  /* Säkerställ att footer visas korrekt på mobila enheter */
+  footer {
+    margin-top: 1rem;
+  }
+  
+  /* Fixa emoji-picker på mobil */
+  .emoji-picker {
+    left: 0 !important;
+  }
+}
+
+/* Fixar scroll-beteende vid tabbyte */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Tar bort det fasta läget för chat-input på mobil */
+@media (max-width: 390px) {
+  .chat-input-container {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+  
+  /* Tar bort extra utrymme som behövdes för fixed position */
+  .chat-messages-container {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }

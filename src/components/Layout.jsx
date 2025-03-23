@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NotificationToast from './NotificationToast';
 
@@ -10,10 +10,15 @@ const Layout = ({ children, onCategoryChange }) => {
   const isHomePage = location.pathname === '/';
   
   // If we're on rewards page, set active category to 'rewards'
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.pathname === '/rewards') {
       setActiveCategory('rewards');
     }
+  }, [location.pathname]);
+
+  // Scroll to top whenever the path changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
   }, [location.pathname]);
 
   const categories = [
@@ -40,14 +45,15 @@ const Layout = ({ children, onCategoryChange }) => {
       navigate('/');
     }
     
-    // For other categories, call the parent handler
+    // For other categories, call the parent handler and scroll to top
     if (onCategoryChange && categoryId !== 'rewards') {
       onCategoryChange(categoryId);
+      window.scrollTo(0, 0);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <header className="bg-white shadow-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -85,13 +91,13 @@ const Layout = ({ children, onCategoryChange }) => {
         </div>
       </header>
       
-      <main className="bg-transparent">
+      <main className="bg-transparent flex-grow">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </div>
       </main>
       
-      <footer className="bg-white py-4 border-t border-gray-200 mt-8">
+      <footer className="bg-white py-4 border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-sm text-gray-700 text-center">CleanLife · Gör hushållssysslor enklare</p>
         </div>
