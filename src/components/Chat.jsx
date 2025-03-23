@@ -89,7 +89,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
   };
 
   return (
-    <div className="flex flex-col h-full relative mb-8">
+    <div className="flex flex-col h-full relative mb-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,7 +116,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
       <div className="flex-1 bg-white rounded-t-xl border border-gray-200 overflow-hidden shadow-sm">
         <div 
           ref={chatContainerRef}
-          className={`${isChatExpanded ? 'h-96' : 'h-56'} md:h-auto max-h-96 overflow-y-auto p-4 space-y-6 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
+          className={`${isChatExpanded ? 'h-56' : 'h-36'} md:h-auto max-h-56 overflow-y-auto p-4 space-y-6 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
         >
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full py-8">

@@ -322,7 +322,8 @@ button:active:not(:disabled) {
 .chat-messages-container {
   transition: height 0.3s ease-in-out;
   overflow-y: auto;
-  margin-bottom: 0; /* Ta bort margin-bottom för att undvika mellanrum */
+  margin-bottom: 0;
+  max-height: 16rem; /* Begränsa maximal höjd även på större skärmar */
 }
 
 /* Säkerställer att övriga element inte täcks av chatt */
@@ -365,7 +366,7 @@ footer {
   .chat-messages-container {
     max-width: 100%;
     height: auto !important;
-    max-height: 16rem !important;
+    max-height: 12rem !important; /* Mindre höjd på mobila enheter */
   }
   
   /* Säkerställ att footer visas korrekt på mobila enheter */
