@@ -24,27 +24,27 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
 
   const userColor = getUserColor(assignedTo);
   const userColorClasses = {
-    blue: 'bg-blue-100 text-blue-800 border-blue-200',
-    pink: 'bg-pink-100 text-pink-800 border-pink-200'
+    blue: 'bg-blue-200 text-blue-800 border-blue-300',
+    pink: 'bg-pink-200 text-pink-800 border-pink-300'
   };
   
   // Get category label and color
   const getCategoryInfo = (cat) => {
     switch(cat) {
       case CATEGORY.MAT:
-        return { label: 'Mat', colorClass: 'bg-amber-100 text-amber-800' };
+        return { label: 'Mat', colorClass: 'bg-amber-200 text-amber-900' };
       case CATEGORY.STAD:
-        return { label: 'Städ', colorClass: 'bg-blue-100 text-blue-800' };
+        return { label: 'Städ', colorClass: 'bg-blue-200 text-blue-900' };
       case CATEGORY.TVATT:
-        return { label: 'Tvätt', colorClass: 'bg-indigo-100 text-indigo-800' };
+        return { label: 'Tvätt', colorClass: 'bg-indigo-200 text-indigo-900' };
       case CATEGORY.SICKAN:
-        return { label: 'Sickan', colorClass: 'bg-pink-100 text-pink-800' };
+        return { label: 'Sickan', colorClass: 'bg-pink-200 text-pink-900' };
       case CATEGORY.DAILY:
-        return { label: 'Vardaglig', colorClass: 'bg-indigo-100 text-indigo-800' };
+        return { label: 'Vardaglig', colorClass: 'bg-indigo-200 text-indigo-900' };
       case CATEGORY.MAJOR:
-        return { label: 'Större uppgift', colorClass: 'bg-purple-100 text-purple-800' };
+        return { label: 'Större uppgift', colorClass: 'bg-purple-200 text-purple-900' };
       default:
-        return { label: 'Övrig', colorClass: 'bg-gray-100 text-gray-800' };
+        return { label: 'Övrig', colorClass: 'bg-gray-200 text-gray-900' };
     }
   };
   
@@ -71,7 +71,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
                 {categoryInfo.label}
               </span>
               
-              <span className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+              <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-900 text-xs font-medium">
                 {frequency === FREQUENCY.ONCE ? 'Engångs' : 
                   frequency === FREQUENCY.DAILY ? 'Dagligen' :
                   frequency === FREQUENCY.WEEKLY ? 'Varje vecka' :
@@ -79,7 +79,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
               </span>
               
               {isMajorTask && points && (
-                <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-medium flex items-center">
+                <span className="px-2.5 py-1 rounded-full bg-amber-200 text-amber-900 text-xs font-medium flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -111,7 +111,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             {!isCompleted && (
               <button
                 onClick={() => onComplete(id)}
-                className="p-1.5 rounded-full bg-green-100 text-green-700 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                className="p-1.5 rounded-full bg-green-200 text-green-800 hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
                 title="Markera som slutförd"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,7 +122,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             
             <button
               onClick={() => onDelete(id)}
-              className="p-1.5 rounded-full bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+              className="p-1.5 rounded-full bg-red-200 text-red-800 hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
               title="Ta bort"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

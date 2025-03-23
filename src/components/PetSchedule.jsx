@@ -63,6 +63,17 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
     return schedule.filter(entry => entry.day === today);
   };
 
+  // Format time slot for display
+  const formatTimeSlot = (timeSlot) => {
+    const timeMap = {
+      [TIME_SLOTS.MORNING]: 'Morning (6-12)',
+      [TIME_SLOTS.AFTERNOON]: 'Afternoon (12-17)',
+      [TIME_SLOTS.EVENING]: 'Evening (17-21)',
+      [TIME_SLOTS.NIGHT]: 'Night (21-6)'
+    };
+    return timeMap[timeSlot] || timeSlot.charAt(0).toUpperCase() + timeSlot.slice(1);
+  };
+
   // Today's assigned entries
   const todayEntries = getTodayEntries();
 
@@ -90,13 +101,13 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
       {/* Today's schedule - for quick reference */}
       <div className="px-6 py-4 bg-purple-50">
         <h3 className="text-md font-medium text-purple-800 mb-3">Today's Walks & Care</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {todayEntries.map(entry => (
             <div 
               key={entry.id}
               className="bg-white rounded-lg p-3 shadow-sm border border-gray-100"
             >
-              <div className="text-sm font-medium text-gray-500">{entry.timeSlot.charAt(0).toUpperCase() + entry.timeSlot.slice(1)}</div>
+              <div className="text-sm font-medium text-gray-500">{formatTimeSlot(entry.timeSlot)}</div>
               <div className="mt-1 flex items-center">
                 <div 
                   className="h-4 w-4 rounded-full mr-2"
@@ -129,7 +140,7 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
               {Object.entries(TIME_SLOTS).map(([slotKey, timeSlot]) => (
                 <tr key={timeSlot}>
                   <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">
-                    {timeSlot.charAt(0).toUpperCase() + timeSlot.slice(1)}
+                    {formatTimeSlot(timeSlot)}
                   </td>
                   {DAYS_OF_WEEK.map(day => {
                     const entry = getScheduleEntry(day, timeSlot);
@@ -167,7 +178,7 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
       {editMode && selectedDay && selectedSlot && (
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
           <h3 className="text-sm font-medium text-gray-700 mb-3">
-            Assign for {selectedDay}, {selectedSlot}:
+            Assign for {selectedDay}, {formatTimeSlot(selectedSlot)}:
           </h3>
           <div className="flex space-x-2">
             {users.map(user => (

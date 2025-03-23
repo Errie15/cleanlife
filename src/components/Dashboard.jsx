@@ -3,16 +3,13 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import useNotifications from '../hooks/useNotifications';
 import { sampleChores, getAssignedUser, CATEGORY } from '../models/chores';
 import { sampleUsers } from '../models/users';
-import { sampleRewards, claimReward } from '../models/rewards';
 import { sampleMessages, addMessage } from '../models/messages';
-import { sampleSchedule } from '../models/schedule';
+import { sampleSchedule, DAYS_OF_WEEK, TIME_SLOTS } from '../models/schedule';
 import { getUserPoints } from '../models/users';
 
 import Layout from './Layout';
 import ChoresList from './ChoresList';
 import AddChoreForm from './AddChoreForm';
-import RewardsList from './RewardsList';
-import AddRewardForm from './AddRewardForm';
 import Chat from './Chat';
 import PetSchedule from './PetSchedule';
 
@@ -21,18 +18,16 @@ const Dashboard = () => {
   // State from localStorage
   const [users, setUsers] = useLocalStorage('cleanlife_users', sampleUsers);
   const [chores, setChores] = useLocalStorage('cleanlife_chores', sampleChores);
-  const [rewards, setRewards] = useLocalStorage('cleanlife_rewards', sampleRewards);
   const [messages, setMessages] = useLocalStorage('cleanlife_messages', sampleMessages);
   const [schedule, setSchedule] = useLocalStorage('cleanlife_schedule', sampleSchedule);
   
   // UI state
   const [showAddChoreForm, setShowAddChoreForm] = useState(false);
-  const [showAddRewardForm, setShowAddRewardForm] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(users[0]?.id);
   const [activeCategory, setActiveCategory] = useState('all');
   
   // Notifications
-  const { notifyChoreCompleted, notifyRewardClaimed } = useNotifications();
+  const { notifyChoreCompleted } = useNotifications();
   
   // Calculate which user is responsible for this week's chores
   const weeklyUser = getAssignedUser(users);
@@ -110,44 +105,6 @@ const Dashboard = () => {
     setChores(chores.filter(chore => chore.id !== choreId));
   };
   
-  // Add a new reward
-  const handleAddReward = (newReward) => {
-    setRewards([...rewards, newReward]);
-    setShowAddRewardForm(false);
-  };
-  
-  // Claim a reward
-  const handleClaimReward = (rewardId, userId) => {
-    const reward = rewards.find(r => r.id === rewardId);
-    if (!reward) return;
-    
-    // Check if user has enough points
-    const user = users.find(u => u.id === userId);
-    if (!user || user.points < reward.pointsCost) return;
-    
-    // Deduct points
-    const updatedUsers = users.map(u => {
-      if (u.id === userId) {
-        return { ...u, points: u.points - reward.pointsCost };
-      }
-      return u;
-    });
-    
-    // Mark reward as claimed
-    const updatedRewards = claimReward(rewardId, userId, rewards);
-    
-    // Notify
-    notifyRewardClaimed(reward.name, user.name);
-    
-    setUsers(updatedUsers);
-    setRewards(updatedRewards);
-  };
-  
-  // Delete a reward
-  const handleDeleteReward = (rewardId) => {
-    setRewards(rewards.filter(reward => reward.id !== rewardId));
-  };
-  
   // Send a chat message
   const handleSendMessage = (senderId, message) => {
     const updatedMessages = addMessage(senderId, message, messages);
@@ -161,6 +118,11 @@ const Dashboard = () => {
     }
     return chores.filter(chore => chore.category === activeCategory);
   }, [chores, activeCategory]);
+  
+  // Show chores list based on activeCategory
+  const showChoresList = useMemo(() => {
+    return activeCategory !== 'sickan';
+  }, [activeCategory]);
   
   // Show schedule based on activeCategory
   const showSchedule = useMemo(() => {
@@ -181,11 +143,67 @@ const Dashboard = () => {
   // Get current user
   const currentUser = users.find(user => user.id === currentUserId);
   
+  // Ensure all schedule slots are populated
+  useEffect(() => {
+    // Skip effect if schedule is already complete
+    if (schedule.length >= DAYS_OF_WEEK.length * Object.keys(TIME_SLOTS).length) {
+      return;
+    }
+    
+    const allTimeSlots = Object.values(TIME_SLOTS);
+    const missingEntries = [];
+
+    // Check if all time slots are present for each day
+    DAYS_OF_WEEK.forEach(day => {
+      allTimeSlots.forEach(timeSlot => {
+        const entry = schedule.find(s => s.day === day && s.timeSlot === timeSlot);
+        if (!entry) {
+          // Determine user based on alternating pattern
+          const dayIndex = DAYS_OF_WEEK.indexOf(day);
+          const slotIndex = allTimeSlots.indexOf(timeSlot);
+          
+          let userId;
+          
+          // Make Friday match Thursday's pattern
+          if (day === 'Friday') {
+            const thursdayPattern = (slotIndex % 2 === 0) ? 'user2' : 'user1'; // Thursday pattern: Linnea morning/evening, Erik afternoon/night
+            userId = thursdayPattern;
+          } 
+          // Saturday - Erik morning/evening, Linnea afternoon/night (Sunday's original pattern)
+          else if (day === 'Saturday') {
+            userId = (slotIndex % 2 === 0) ? 'user1' : 'user2';
+          }
+          // Sunday - Linnea morning/evening, Erik afternoon/night (Saturday's original pattern)
+          else if (day === 'Sunday') {
+            userId = (slotIndex % 2 === 0) ? 'user2' : 'user1';
+          }
+          else {
+            // Standard alternating pattern for other days
+            const isEven = (dayIndex + slotIndex) % 2 === 0;
+            userId = isEven ? 'user1' : 'user2'; // user1 = Erik, user2 = Linnea
+          }
+          
+          missingEntries.push({
+            id: `schedule_${day}_${timeSlot}_${Date.now()}`,
+            day,
+            timeSlot,
+            assignedTo: userId,
+            createdAt: new Date().toISOString()
+          });
+        }
+      });
+    });
+
+    if (missingEntries.length > 0) {
+      setSchedule(prev => [...prev, ...missingEntries]);
+    }
+  }, [schedule, DAYS_OF_WEEK, TIME_SLOTS, setSchedule]);
+  
   return (
     <Layout onCategoryChange={setActiveCategory}>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className={`grid grid-cols-1 ${activeCategory !== 'sickan' ? 'lg:grid-cols-1' : ''} gap-6`}>
         {/* Left column - Chores */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           {/* User indicator */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -196,53 +214,67 @@ const Dashboard = () => {
                 {users.find(user => user.id === currentUserId)?.name.charAt(0) || '?'}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Logged in as</p>
-                <p className="font-medium">{users.find(user => user.id === currentUserId)?.name || 'Unknown'}</p>
+                <p className="text-sm text-gray-800">Inloggad som</p>
+                <p className="font-medium">{users.find(user => user.id === currentUserId)?.name || 'Okänd'}</p>
               </div>
             </div>
             
             <div className="flex space-x-3 items-center">
               <div className="px-3 py-1 bg-purple-100 rounded-full">
-                <span className="text-sm font-medium text-purple-700">{userPoints} points</span>
+                <span className="text-sm font-medium text-purple-800">{userPoints} poäng</span>
               </div>
               <button
                 onClick={handleSwitchUser}
-                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors"
+                className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium text-gray-800 transition-colors"
               >
-                Switch User
+                Byt Användare
               </button>
             </div>
           </div>
           
           {/* Chores List */}
-          <div className="space-y-1">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-800">This Week's Chores</h2>
-              <button
-                onClick={() => setShowAddChoreForm(true)}
-                className="px-3 py-2 bg-purple-100 hover:bg-purple-200 rounded-md text-sm font-medium text-purple-700 transition-colors"
-              >
-                Add Chore
-              </button>
+          {showChoresList && (
+            <div className="space-y-1">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-gray-800">Veckans Uppgifter</h2>
+                <button
+                  onClick={() => setShowAddChoreForm(!showAddChoreForm)}
+                  className="px-3 py-2 bg-purple-200 hover:bg-purple-300 rounded-md text-sm font-medium text-purple-800 transition-colors"
+                >
+                  {showAddChoreForm ? "Avbryt" : "Lägg Till Uppgift"}
+                </button>
+              </div>
+              
+              {showAddChoreForm && (
+                <div className="mt-4 p-4 rounded-xl bg-white shadow-sm">
+                  <AddChoreForm 
+                    onAddChore={handleAddChore} 
+                    onCancel={() => setShowAddChoreForm(false)} 
+                  />
+                </div>
+              )}
+              
+              <ChoresList
+                title="Uppgifter"
+                chores={filteredChores}
+                users={users}
+                currentUserId={currentUserId}
+                onComplete={handleCompleteChore}
+                onDelete={handleDeleteChore}
+              />
             </div>
-            
-            <ChoresList
-              chores={filteredChores}
-              users={users}
-              currentUserId={currentUserId}
-              onCompleteChore={handleCompleteChore}
-              onDeleteChore={handleDeleteChore}
-            />
-          </div>
+          )}
           
           {/* Pet Schedule - NEW COMPONENT */}
           {showSchedule && (
-            <PetSchedule
-              schedule={schedule}
-              users={users}
-              currentUserId={currentUserId}
-              onUpdateSchedule={handleUpdateSchedule}
-            />
+            <div className={`${activeCategory === 'sickan' ? 'max-w-5xl mx-auto w-full' : ''}`}>
+              <PetSchedule
+                schedule={schedule}
+                users={users}
+                currentUserId={currentUserId}
+                onUpdateSchedule={handleUpdateSchedule}
+              />
+            </div>
           )}
           
           {/* Chat section */}
@@ -253,85 +285,6 @@ const Dashboard = () => {
             onSendMessage={handleSendMessage}
           />
         </div>
-        
-        {/* Right column - Rewards */}
-        <div className="space-y-6">
-          <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Belöningar
-              </h3>
-              <button
-                onClick={() => setShowAddRewardForm(!showAddRewardForm)}
-                className="flex items-center px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
-              >
-                {showAddRewardForm ? (
-                  <>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Avbryt
-                  </>
-                ) : (
-                  <>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Lägg till belöning
-                  </>
-                )}
-              </button>
-            </div>
-            
-            {showAddRewardForm ? (
-              <AddRewardForm 
-                onAddReward={handleAddReward} 
-                onCancel={() => setShowAddRewardForm(false)} 
-              />
-            ) : (
-              <RewardsList
-                rewards={rewards}
-                users={users}
-                currentUserId={currentUserId}
-                userPoints={userPoints}
-                onClaim={handleClaimReward}
-                onDelete={handleDeleteReward}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {/* Section for adding new chores */}
-      <div className="mt-6 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-gray-50 to-white">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-gray-500 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Lägg till ny uppgift
-          </h3>
-          <button
-            onClick={() => setShowAddChoreForm(!showAddChoreForm)}
-            className="flex items-center px-3 py-1.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            {showAddChoreForm ? "Avbryt" : "Lägg till uppgift"}
-          </button>
-        </div>
-        
-        {showAddChoreForm && (
-          <AddChoreForm 
-            onAddChore={handleAddChore} 
-            onCancel={() => setShowAddChoreForm(false)} 
-          />
-        )}
-      </div>
-
-      <div className="text-sm text-purple-700">
-        {messages.length} {messages.length === 1 ? 'meddelande' : 'meddelanden'}
       </div>
     </Layout>
   );

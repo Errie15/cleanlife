@@ -15,15 +15,15 @@ const RewardsList = ({ rewards, users, currentUserId, userPoints, onClaim, onDel
 
   return (
     <div className="bg-gray-50 rounded-md p-3 shadow">
-      <h2 className="text-lg font-semibold mb-3 text-gray-700">Belöningar</h2>
+      <h2 className="text-lg font-semibold mb-3 text-gray-800">Belöningar</h2>
       
-      <div className="mb-3 bg-yellow-50 p-2 rounded-md border border-yellow-200">
-        <p className="text-sm text-yellow-800">Dina poäng: {userPoints}</p>
+      <div className="mb-3 bg-yellow-100 p-2 rounded-md border border-yellow-300">
+        <p className="text-sm text-yellow-900 font-medium">Dina poäng: {userPoints}</p>
       </div>
       
       <div className="space-y-2">
         {sortedRewards.length === 0 ? (
-          <p className="text-gray-500 text-sm p-2">Inga belöningar att visa</p>
+          <p className="text-gray-700 text-sm p-2">Inga belöningar att visa</p>
         ) : (
           sortedRewards.map((reward) => (
             <RewardCard

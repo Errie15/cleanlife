@@ -14,7 +14,8 @@ export const DAYS_OF_WEEK = [
 export const TIME_SLOTS = {
   MORNING: 'morning',
   AFTERNOON: 'afternoon',
-  EVENING: 'evening'
+  EVENING: 'evening',
+  NIGHT: 'night'
 };
 
 // Generate a new schedule entry
@@ -47,6 +48,7 @@ export const generateInitialSchedule = (users) => {
 
 // Sample schedule data for initial setup
 export const sampleSchedule = [
+  // Monday
   {
     id: 'schedule1',
     day: 'Monday',
@@ -57,92 +59,196 @@ export const sampleSchedule = [
   {
     id: 'schedule2',
     day: 'Monday',
-    timeSlot: TIME_SLOTS.EVENING,
+    timeSlot: TIME_SLOTS.AFTERNOON,
     assignedTo: 'user2', // Linnea
     createdAt: new Date().toISOString()
   },
   {
     id: 'schedule3',
-    day: 'Tuesday',
-    timeSlot: TIME_SLOTS.MORNING,
-    assignedTo: 'user2', // Linnea
+    day: 'Monday',
+    timeSlot: TIME_SLOTS.EVENING,
+    assignedTo: 'user1', // Erik
     createdAt: new Date().toISOString()
   },
   {
     id: 'schedule4',
-    day: 'Tuesday',
-    timeSlot: TIME_SLOTS.EVENING,
-    assignedTo: 'user1', // Erik
+    day: 'Monday',
+    timeSlot: TIME_SLOTS.NIGHT,
+    assignedTo: 'user2', // Linnea
     createdAt: new Date().toISOString()
   },
+  // Tuesday
   {
     id: 'schedule5',
-    day: 'Wednesday',
+    day: 'Tuesday',
     timeSlot: TIME_SLOTS.MORNING,
-    assignedTo: 'user1', // Erik
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'schedule6',
-    day: 'Wednesday',
-    timeSlot: TIME_SLOTS.EVENING,
     assignedTo: 'user2', // Linnea
     createdAt: new Date().toISOString()
   },
   {
+    id: 'schedule6',
+    day: 'Tuesday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user1', // Erik
+    createdAt: new Date().toISOString()
+  },
+  {
     id: 'schedule7',
-    day: 'Thursday',
-    timeSlot: TIME_SLOTS.MORNING,
+    day: 'Tuesday',
+    timeSlot: TIME_SLOTS.EVENING,
     assignedTo: 'user2', // Linnea
     createdAt: new Date().toISOString()
   },
   {
     id: 'schedule8',
-    day: 'Thursday',
-    timeSlot: TIME_SLOTS.EVENING,
+    day: 'Tuesday',
+    timeSlot: TIME_SLOTS.NIGHT,
     assignedTo: 'user1', // Erik
     createdAt: new Date().toISOString()
   },
+  // Wednesday
   {
     id: 'schedule9',
-    day: 'Friday',
+    day: 'Wednesday',
     timeSlot: TIME_SLOTS.MORNING,
     assignedTo: 'user1', // Erik
     createdAt: new Date().toISOString()
   },
   {
     id: 'schedule10',
+    day: 'Wednesday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user2', // Linnea
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule11',
+    day: 'Wednesday',
+    timeSlot: TIME_SLOTS.EVENING,
+    assignedTo: 'user1', // Erik
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule12',
+    day: 'Wednesday',
+    timeSlot: TIME_SLOTS.NIGHT,
+    assignedTo: 'user2', // Linnea
+    createdAt: new Date().toISOString()
+  },
+  // Thursday
+  {
+    id: 'schedule13',
+    day: 'Thursday',
+    timeSlot: TIME_SLOTS.MORNING,
+    assignedTo: 'user2', // Linnea
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule14',
+    day: 'Thursday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user1', // Erik
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule15',
+    day: 'Thursday',
+    timeSlot: TIME_SLOTS.EVENING,
+    assignedTo: 'user2', // Linnea
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule16',
+    day: 'Thursday',
+    timeSlot: TIME_SLOTS.NIGHT,
+    assignedTo: 'user1', // Erik
+    createdAt: new Date().toISOString()
+  },
+  // Friday
+  {
+    id: 'schedule17',
+    day: 'Friday',
+    timeSlot: TIME_SLOTS.MORNING,
+    assignedTo: 'user2', // Linnea
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule18',
+    day: 'Friday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user1', // Erik
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule19',
     day: 'Friday',
     timeSlot: TIME_SLOTS.EVENING,
     assignedTo: 'user2', // Linnea
     createdAt: new Date().toISOString()
   },
   {
-    id: 'schedule11',
-    day: 'Saturday',
-    timeSlot: TIME_SLOTS.MORNING,
-    assignedTo: 'user2', // Linnea
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'schedule12',
-    day: 'Saturday',
-    timeSlot: TIME_SLOTS.EVENING,
+    id: 'schedule20',
+    day: 'Friday',
+    timeSlot: TIME_SLOTS.NIGHT,
     assignedTo: 'user1', // Erik
     createdAt: new Date().toISOString()
   },
+  // Saturday
   {
-    id: 'schedule13',
-    day: 'Sunday',
+    id: 'schedule21',
+    day: 'Saturday',
     timeSlot: TIME_SLOTS.MORNING,
-    assignedTo: 'user1', // Erik
+    assignedTo: 'user1', // Erik (was Linnea)
     createdAt: new Date().toISOString()
   },
   {
-    id: 'schedule14',
+    id: 'schedule22',
+    day: 'Saturday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user2', // Linnea (was Erik)
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule23',
+    day: 'Saturday',
+    timeSlot: TIME_SLOTS.EVENING,
+    assignedTo: 'user1', // Erik (was Linnea)
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule24',
+    day: 'Saturday',
+    timeSlot: TIME_SLOTS.NIGHT,
+    assignedTo: 'user2', // Linnea (was Erik)
+    createdAt: new Date().toISOString()
+  },
+  // Sunday
+  {
+    id: 'schedule25',
+    day: 'Sunday',
+    timeSlot: TIME_SLOTS.MORNING,
+    assignedTo: 'user2', // Linnea (was Erik)
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule26',
+    day: 'Sunday',
+    timeSlot: TIME_SLOTS.AFTERNOON,
+    assignedTo: 'user1', // Erik (was Linnea)
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule27',
     day: 'Sunday',
     timeSlot: TIME_SLOTS.EVENING,
-    assignedTo: 'user2', // Linnea
+    assignedTo: 'user2', // Linnea (was Erik)
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'schedule28',
+    day: 'Sunday',
+    timeSlot: TIME_SLOTS.NIGHT,
+    assignedTo: 'user1', // Erik (was Linnea)
     createdAt: new Date().toISOString()
   }
 ]; 

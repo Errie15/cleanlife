@@ -19,13 +19,13 @@ const RewardCard = ({ reward, users, currentUserId, userPoints, onClaim, onDelet
         <div>
           <h3 className="font-semibold text-lg text-gray-800">{name}</h3>
           <div className="my-2">
-            <span className="px-2 py-1 rounded bg-yellow-100 text-yellow-800 text-xs">
+            <span className="px-2 py-1 rounded bg-yellow-200 text-yellow-900 text-xs">
               {pointsCost} poäng
             </span>
           </div>
           
           {claimedByUser && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-700">
               <p>Belöningen är redan tagen av {claimedByUser.name} ({claimDate})</p>
             </div>
           )}
@@ -37,8 +37,8 @@ const RewardCard = ({ reward, users, currentUserId, userPoints, onClaim, onDelet
               onClick={() => onClaim(id, currentUserId)}
               className={`px-3 py-1 rounded-md text-sm ${
                 hasEnoughPoints 
-                  ? 'bg-green-500 hover:bg-green-600 text-gray-100' 
-                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-gray-300 text-gray-700 cursor-not-allowed'
               }`}
               disabled={!hasEnoughPoints}
               title={!hasEnoughPoints ? 'Du har inte tillräckligt med poäng' : ''}
@@ -49,7 +49,7 @@ const RewardCard = ({ reward, users, currentUserId, userPoints, onClaim, onDelet
           
           <button
             onClick={() => onDelete(id)}
-            className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm"
+            className="px-3 py-1 bg-red-200 hover:bg-red-300 text-red-800 rounded-md text-sm"
           >
             Ta bort
           </button>

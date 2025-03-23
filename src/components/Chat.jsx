@@ -6,6 +6,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [isChatExpanded, setIsChatExpanded] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -52,6 +53,11 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
     }, 0);
   };
 
+  // Toggle chat expansion
+  const toggleChatExpansion = () => {
+    setIsChatExpanded(!isChatExpanded);
+  };
+
   // Group messages by date
   const groupedMessages = messages.reduce((groups, message) => {
     const date = new Date(message.timestamp).toLocaleDateString('sv-SE');
@@ -86,20 +92,31 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
-          <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-indigo-600">Chatt</h2>
+          <h2 className="text-xl font-semibold text-purple-800">Konversation</h2>
         </div>
-        <div className="text-sm text-purple-500">
-          {messages.length} {messages.length === 1 ? 'meddelande' : 'meddelanden'}
+        <div className="flex items-center">
+          <div className="text-sm text-purple-800 mr-3">
+            {messages.length} {messages.length === 1 ? 'meddelande' : 'meddelanden'}
+          </div>
+          <button 
+            onClick={toggleChatExpansion}
+            className="p-1 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+            aria-label={isChatExpanded ? "Minimera chat" : "Expandera chat"}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isChatExpanded ? "M19 9l-7 7-7-7" : "M5 15l7-7 7 7"} />
+            </svg>
+          </button>
         </div>
       </div>
       
       <div className="flex-1 bg-white rounded-xl border border-gray-200 mb-4 overflow-hidden shadow-sm">
         <div 
           ref={chatContainerRef}
-          className="h-72 md:h-96 overflow-y-auto p-4 space-y-6 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container"
+          className={`${isChatExpanded ? 'h-96' : 'h-56'} md:h-auto max-h-96 overflow-y-auto p-4 space-y-6 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
         >
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full py-8">
