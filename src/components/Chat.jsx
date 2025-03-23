@@ -116,10 +116,10 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
       <div className="flex-1 bg-white rounded-t-xl border border-gray-200 overflow-hidden shadow-sm">
         <div 
           ref={chatContainerRef}
-          className={`${isChatExpanded ? 'h-36' : 'h-28'} md:h-auto max-h-36 overflow-y-auto p-3 space-y-4 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
+          className={`${messages.length === 0 ? 'h-0' : isChatExpanded ? 'h-32' : 'h-24'} md:h-auto overflow-y-auto p-3 space-y-4 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
         >
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full py-4">
+            <div className="hidden">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-purple-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
@@ -181,7 +181,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
         </div>
       </div>
       
-      <form onSubmit={handleSubmit} className="flex bg-white p-3 rounded-b-xl shadow-md chat-input-container border-t border-purple-100">
+      <form onSubmit={handleSubmit} className="flex bg-white p-3 rounded-xl shadow-md chat-input-container border border-purple-100">
         <button
           type="button"
           onClick={() => setShowEmoji(!showEmoji)}

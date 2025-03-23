@@ -103,12 +103,12 @@ const Layout = ({ children, onCategoryChange }) => {
         
         {/* Navigation Categories */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-          <nav className="flex space-x-0 overflow-x-auto scrollbar-hide">
+          <nav className="flex space-x-1 overflow-x-auto scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => handleCategoryChange(category.id)}
-                className={`w-8 h-8 text-sm font-medium rounded-full flex items-center justify-center transition-colors ${
+                className={`p-1.5 text-sm font-medium rounded-md flex items-center justify-center transition-colors ${
                   activeCategory === category.id
                     ? 'bg-purple-100 text-purple-800 shadow-sm'
                     : 'text-gray-700 hover:text-purple-800 hover:bg-purple-50'
