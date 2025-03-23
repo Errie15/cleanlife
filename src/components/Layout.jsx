@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NotificationToast from './NotificationToast';
+// Importera ikoner från react-icons
+import { FaListUl, FaUtensils, FaBroom, FaPaw, FaTshirt, FaProjectDiagram, FaGift } from 'react-icons/fa';
 
 // Layout component for the entire application
 const Layout = ({ children, onCategoryChange }) => {
@@ -22,13 +24,41 @@ const Layout = ({ children, onCategoryChange }) => {
   }, [location.pathname]);
 
   const categories = [
-    { id: 'all', name: 'Alla Uppgifter' },
-    { id: 'mat', name: 'Mat' },
-    { id: 'tvatt', name: 'Tvätt' },
-    { id: 'stad', name: 'Städning' },
-    { id: 'sickan', name: 'Sickan' },
-    { id: 'major', name: 'Projekt' },
-    { id: 'rewards', name: 'Belöningar' }
+    { 
+      id: 'all', 
+      name: 'Alla Uppgifter',
+      icon: <FaListUl size={20} />
+    },
+    { 
+      id: 'mat', 
+      name: 'Mat',
+      icon: <FaUtensils size={20} />
+    },
+    { 
+      id: 'stad', 
+      name: 'Städning',
+      icon: <FaBroom size={20} />
+    },
+    { 
+      id: 'sickan', 
+      name: 'Sickan',
+      icon: <FaPaw size={20} />
+    },
+    { 
+      id: 'tvatt', 
+      name: 'Tvätt',
+      icon: <FaTshirt size={20} />
+    },
+    { 
+      id: 'major', 
+      name: 'Projekt',
+      icon: <FaProjectDiagram size={20} />
+    },
+    { 
+      id: 'rewards', 
+      name: 'Belöningar',
+      icon: <FaGift size={20} />
+    }
   ];
 
   const handleCategoryChange = (categoryId) => {
@@ -78,13 +108,14 @@ const Layout = ({ children, onCategoryChange }) => {
               <button
                 key={category.id}
                 onClick={() => handleCategoryChange(category.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+                className={`p-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors flex items-center justify-center ${
                   activeCategory === category.id
                     ? 'bg-purple-100 text-purple-800 shadow-sm'
                     : 'text-gray-700 hover:text-purple-800 hover:bg-purple-50'
                 }`}
+                title={category.name}
               >
-                {category.name}
+                {category.icon}
               </button>
             ))}
           </nav>
