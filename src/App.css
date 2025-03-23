@@ -40,7 +40,7 @@
 }
 
 .read-the-docs {
-  color: #888;
+  color: #595959;
 }
 
 /* Add subtle animation effects for interactive elements */
@@ -294,4 +294,26 @@ button:active:not(:disabled) {
     border-color: #8b5cf6; /* Purple-500 */
     background-color: white;
   }
+}
+
+/* Ensure high contrast text for all states */
+::placeholder {
+  color: #666 !important;
+}
+
+.text-gray-500 {
+  color: #595959 !important;
+}
+
+.text-gray-600 {
+  color: #454545 !important;
+}
+
+.text-purple-400 {
+  color: #7e3af2 !important;
+}
+
+/* Ensure notification messages have enough contrast */
+.bg-purple-50\/90 {
+  background-color: rgba(243, 232, 255, 0.9) !important;
 }

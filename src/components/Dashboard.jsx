@@ -182,7 +182,7 @@ const Dashboard = () => {
                activeCategory === 'sickan' ? 'Sickan Chores' :
                activeCategory === 'major' ? 'Projects & Renovations' : 'Chores'}
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-700">
               This week's responsible: <span className="font-medium text-purple-700">{weeklyUser?.name}</span>
             </p>
           </div>
@@ -318,6 +318,10 @@ const Dashboard = () => {
           currentUserId={currentUserId}
           onSendMessage={handleSendMessage}
         />
+      </div>
+
+      <div className="text-sm text-purple-700">
+        {messages.length} {messages.length === 1 ? 'meddelande' : 'meddelanden'}
       </div>
     </Layout>
   );

@@ -103,11 +103,11 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
         >
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full py-8">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-purple-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-purple-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <p className="text-purple-600 font-medium">Inga meddelanden än</p>
-              <p className="text-purple-400 text-sm mt-1">Börja konversationen genom att skicka ett meddelande</p>
+              <p className="text-purple-700 font-medium">Inga meddelanden än</p>
+              <p className="text-purple-600 text-sm mt-1">Börja konversationen genom att skicka ett meddelande</p>
             </div>
           ) : (
             Object.entries(groupedMessages).map(([date, dateMessages]) => (
@@ -196,7 +196,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-purple-200 rounded-l-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 bg-white text-gray-800 font-medium placeholder:text-purple-400 placeholder:font-normal text-base leading-normal"
+            className="w-full px-4 py-3 border-2 border-purple-200 rounded-l-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 bg-white text-gray-800 font-medium placeholder:text-gray-500 placeholder:font-normal text-base leading-normal"
             placeholder="Skriv ett meddelande..."
             aria-label="Message input"
           />

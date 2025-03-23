@@ -15,4 +15,8 @@ alwaysApply: true
 
 🧬 Follow best practices for clean, maintainable code.
 
+🎨 Text Contrast Rule:
+
+Never use low-contrast text. All text—including placeholders, labels, and buttons—must be clearly readable against its background at all times. If unsure, increase contrast or ask.
+
 🗂️ For all GitHub operations, refer to the github-guidelines.md in the root directory.

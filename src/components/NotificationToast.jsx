@@ -47,7 +47,7 @@ const NotificationToast = () => {
             <div className="ml-3">
               <button
                 type="button"
-                className={`rounded-full p-1.5 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors duration-200`}
+                className={`rounded-full p-1.5 inline-flex text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors duration-200`}
                 onClick={() => removeNotification(notification.id)}
               >
                 <span className="sr-only">Stäng</span>

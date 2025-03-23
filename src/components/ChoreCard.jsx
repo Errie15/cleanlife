@@ -63,7 +63,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             <h3 className="font-medium text-lg text-gray-800">{title}</h3>
             
             {description && (
-              <p className="text-sm text-gray-600 mt-1">{description}</p>
+              <p className="text-sm text-gray-700 mt-1">{description}</p>
             )}
             
             <div className="flex flex-wrap gap-2 my-2">
@@ -89,7 +89,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             </div>
             
             {isCompleted && formattedDate && (
-              <div className="text-xs text-gray-500 mt-1">
+              <div className="text-xs text-gray-700 mt-1">
                 Slutfört: {formattedDate}
               </div>
             )}
@@ -102,7 +102,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
                 >
                   {assignedUser.name.charAt(0)}
                 </div>
-                <span className="text-xs text-gray-500 ml-2">{assignedUser.name}</span>
+                <span className="text-xs text-gray-700 ml-2">{assignedUser.name}</span>
               </div>
             )}
           </div>
