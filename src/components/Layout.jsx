@@ -83,7 +83,7 @@ const Layout = ({ children, onCategoryChange }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="flex flex-col min-h-screen max-h-screen overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <header className="bg-white shadow-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -122,7 +122,7 @@ const Layout = ({ children, onCategoryChange }) => {
         </div>
       </header>
       
-      <main className="bg-transparent flex-grow">
+      <main className="bg-transparent flex-grow overflow-y-auto">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </div>

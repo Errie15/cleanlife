@@ -18,6 +18,24 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
     scrollToBottom();
   }, [messages]);
 
+  // Detect if user is on mobile
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkIsMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIsMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -85,6 +103,15 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
       return userColor === 'blue'
         ? 'bg-blue-100 text-blue-900 border border-blue-200'
         : 'bg-pink-100 text-pink-900 border border-pink-200';
+    }
+  };
+
+  // Get appropriate chat height based on device and expansion state
+  const getChatContainerHeight = () => {
+    if (isMobile) {
+      return isChatExpanded ? 'h-[50vh]' : 'h-32';
+    } else {
+      return isChatExpanded ? 'h-96' : 'h-40';
     }
   };
 
@@ -176,10 +203,10 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
       ) : (
         // Visa meddelandefönster + inputfält när det finns meddelanden
         <>
-          <div className="flex-1 bg-white rounded-t-xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="bg-white rounded-t-xl border border-gray-200 overflow-hidden shadow-sm">
             <div 
               ref={chatContainerRef}
-              className={`${isChatExpanded ? 'h-32' : 'h-24'} md:h-auto max-h-32 overflow-y-auto p-3 space-y-4 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
+              className={`${getChatContainerHeight()} max-h-[70vh] overflow-y-auto p-3 space-y-4 bg-gradient-to-b from-gray-50 to-white choresList-scrollbar chat-messages-container transition-all duration-300`}
             >
               {Object.entries(groupedMessages).map(([date, dateMessages]) => (
                 <div key={date} className="space-y-4">
@@ -211,7 +238,7 @@ const Chat = ({ messages, users, currentUserId, onSendMessage }) => {
                         )}
                         
                         <div 
-                          className={`px-4 py-3 max-w-[85%] sm:max-w-xs break-words shadow-sm ${bubbleColors} ${isCurrentUser ? 'chat-bubble-right' : 'chat-bubble-left'}`}
+                          className={`px-4 py-3 max-w-[85%] md:max-w-xs break-words shadow-sm ${bubbleColors} ${isCurrentUser ? 'chat-bubble-right' : 'chat-bubble-left'}`}
                         >
                           <p className="text-sm mb-2 font-medium">{msg.message}</p>
                           <div className="flex justify-between items-center text-xs opacity-80">
