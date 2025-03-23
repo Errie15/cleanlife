@@ -130,6 +130,11 @@ const Dashboard = () => {
     return activeCategory === 'sickan' || activeCategory === 'all';
   }, [activeCategory]);
   
+  // Show full schedule table
+  const showFullSchedule = useMemo(() => {
+    return activeCategory === 'sickan';
+  }, [activeCategory]);
+  
   // Show project decision maker based on activeCategory
   const showProjectDecisionMaker = useMemo(() => {
     return activeCategory === 'major';
@@ -284,6 +289,7 @@ const Dashboard = () => {
                 users={users}
                 currentUserId={currentUserId}
                 onUpdateSchedule={handleUpdateSchedule}
+                showFullSchedule={showFullSchedule}
               />
             </div>
           )}

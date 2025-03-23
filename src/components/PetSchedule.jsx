@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DAYS_OF_WEEK, TIME_SLOTS } from '../models/schedule';
 
 // Component for displaying and managing pet care schedule
-const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
+const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule, showFullSchedule = true }) => {
   const [editMode, setEditMode] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -86,16 +86,18 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
           </svg>
           Sickan's Daily Schedule
         </h2>
-        <button
-          onClick={() => setEditMode(!editMode)}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-            editMode
-              ? 'bg-purple-600 text-white hover:bg-purple-700'
-              : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-          }`}
-        >
-          {editMode ? 'Done Editing' : 'Edit Schedule'}
-        </button>
+        {showFullSchedule && (
+          <button
+            onClick={() => setEditMode(!editMode)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              editMode
+                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+            }`}
+          >
+            {editMode ? 'Done Editing' : 'Edit Schedule'}
+          </button>
+        )}
       </div>
 
       {/* Today's schedule - for quick reference */}
@@ -120,62 +122,64 @@ const PetSchedule = ({ schedule, users, currentUserId, onUpdateSchedule }) => {
         </div>
       </div>
 
-      {/* Weekly schedule grid */}
-      <div className="p-6">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Time
-                </th>
-                {DAYS_OF_WEEK.map(day => (
-                  <th key={day} className="px-3 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {day.substring(0, 3)}
+      {/* Weekly schedule grid - only show when showFullSchedule is true */}
+      {showFullSchedule && (
+        <div className="p-6">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Time
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {Object.entries(TIME_SLOTS).map(([slotKey, timeSlot]) => (
-                <tr key={timeSlot}>
-                  <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">
-                    {formatTimeSlot(timeSlot)}
-                  </td>
-                  {DAYS_OF_WEEK.map(day => {
-                    const entry = getScheduleEntry(day, timeSlot);
-                    const assignedUserId = entry ? entry.assignedTo : null;
-                    const isSelected = selectedDay === day && selectedSlot === timeSlot;
-                    
-                    return (
-                      <td
-                        key={`${day}-${timeSlot}`}
-                        onClick={() => handleSlotClick(day, timeSlot)}
-                        className={`px-3 py-4 whitespace-nowrap text-sm text-center cursor-pointer transition-colors ${
-                          isSelected ? 'bg-purple-100' : ''
-                        } ${editMode ? 'hover:bg-purple-50' : ''}`}
-                      >
-                        <div className="flex flex-col items-center justify-center">
-                          <div 
-                            className="h-5 w-5 rounded-full mb-1"
-                            style={{ backgroundColor: getUserColor(assignedUserId) }}
-                          ></div>
-                          <span className="font-medium">
-                            {getUserName(assignedUserId)}
-                          </span>
-                        </div>
-                      </td>
-                    );
-                  })}
+                  {DAYS_OF_WEEK.map(day => (
+                    <th key={day} className="px-3 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {day.substring(0, 3)}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {Object.entries(TIME_SLOTS).map(([slotKey, timeSlot]) => (
+                  <tr key={timeSlot}>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">
+                      {formatTimeSlot(timeSlot)}
+                    </td>
+                    {DAYS_OF_WEEK.map(day => {
+                      const entry = getScheduleEntry(day, timeSlot);
+                      const assignedUserId = entry ? entry.assignedTo : null;
+                      const isSelected = selectedDay === day && selectedSlot === timeSlot;
+                      
+                      return (
+                        <td
+                          key={`${day}-${timeSlot}`}
+                          onClick={() => handleSlotClick(day, timeSlot)}
+                          className={`px-3 py-4 whitespace-nowrap text-sm text-center cursor-pointer transition-colors ${
+                            isSelected ? 'bg-purple-100' : ''
+                          } ${editMode ? 'hover:bg-purple-50' : ''}`}
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <div 
+                              className="h-5 w-5 rounded-full mb-1"
+                              style={{ backgroundColor: getUserColor(assignedUserId) }}
+                            ></div>
+                            <span className="font-medium">
+                              {getUserName(assignedUserId)}
+                            </span>
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* User selection panel (visible in edit mode when a slot is selected) */}
-      {editMode && selectedDay && selectedSlot && (
+      {showFullSchedule && editMode && selectedDay && selectedSlot && (
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
           <h3 className="text-sm font-medium text-gray-700 mb-3">
             Assign for {selectedDay}, {formatTimeSlot(selectedSlot)}:
