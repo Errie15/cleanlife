@@ -14,45 +14,16 @@ function App() {
     // Funktion för att försöka migrera data
     const tryMigration = async () => {
       try {
-        console.log("Kontrollerar och migrerar data om nödvändigt...");
+        console.log("Hoppar över migrering och startar appen direkt...");
         
-        // Kontrollera om migrering redan är genomförd
-        if (await isMigrated()) {
-          console.log("Data redan migrerad, fortsätter...");
-          setIsLoading(false);
-          return;
-        }
+        // Markera migrering som slutförd direkt utan att försöka migrera
+        localStorage.setItem('migration_completed', 'true');
         
-        console.log("Startar migrering av data till API...");
-        
-        // Försök migrera, med timeout för att inte hänga om det misslyckas
-        const migrationPromise = migrateToApi();
-        
-        // Sätt en timeout för att fortsätta oavsett om migreringen lyckas
-        const timeoutPromise = new Promise((resolve) => {
-          setTimeout(() => {
-            console.warn("Migrering tog för lång tid, fortsätter ändå");
-            resolve({ timeout: true });
-          }, 10000); // 10 sekunders timeout
-        });
-        
-        // Vänta på antingen migrering eller timeout
-        const result = await Promise.race([migrationPromise, timeoutPromise]);
-        
-        if (result && result.timeout) {
-          // Om timeout inträffade, visa ett varningsmeddelande men fortsätt
-          console.warn("Migreringen tog för lång tid - kontrollera nätverksanslutningen");
-        } else if (result && result.success) {
-          console.log("Migrering slutförd framgångsrikt");
-        } else {
-          // Om migreringen misslyckades med ett explicit fel
-          throw new Error(result?.message || "Migrering misslyckades av okänd anledning");
-        }
-        
+        // Fortsätt direkt till appen
         setIsLoading(false);
       } catch (err) {
-        console.error("Fel vid migrering:", err);
-        setError(`Kunde inte migrera data: ${err.message}. Kontrollera att API-servern körs.`);
+        console.error("Oväntat fel:", err);
+        setError(`Ett oväntat fel uppstod: ${err.message}`);
         setIsLoading(false);
       }
     };
