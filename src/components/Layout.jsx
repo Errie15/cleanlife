@@ -12,6 +12,7 @@ const Layout = ({ children, onCategoryChange }) => {
     { id: 'stad', name: 'Cleaning' },
     { id: 'sickan', name: 'Sickan' },
     { id: 'major', name: 'Projects' },
+    { id: 'schedule', name: 'Schedule' },
   ];
 
   const handleCategoryChange = (categoryId) => {

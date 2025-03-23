@@ -5,6 +5,7 @@ import { sampleChores, getAssignedUser, CATEGORY } from '../models/chores';
 import { sampleUsers } from '../models/users';
 import { sampleRewards, claimReward } from '../models/rewards';
 import { sampleMessages, addMessage } from '../models/messages';
+import { sampleSchedule } from '../models/schedule';
 import { getUserPoints } from '../models/users';
 
 import Layout from './Layout';
@@ -13,6 +14,7 @@ import AddChoreForm from './AddChoreForm';
 import RewardsList from './RewardsList';
 import AddRewardForm from './AddRewardForm';
 import Chat from './Chat';
+import PetSchedule from './PetSchedule';
 
 // Main dashboard component
 const Dashboard = () => {
@@ -21,6 +23,7 @@ const Dashboard = () => {
   const [chores, setChores] = useLocalStorage('cleanlife_chores', sampleChores);
   const [rewards, setRewards] = useLocalStorage('cleanlife_rewards', sampleRewards);
   const [messages, setMessages] = useLocalStorage('cleanlife_messages', sampleMessages);
+  const [schedule, setSchedule] = useLocalStorage('cleanlife_schedule', sampleSchedule);
   
   // UI state
   const [showAddChoreForm, setShowAddChoreForm] = useState(false);
@@ -36,6 +39,11 @@ const Dashboard = () => {
   
   // Get current user points
   const userPoints = getUserPoints(currentUserId, users);
+  
+  // Update pet schedule
+  const handleUpdateSchedule = (newSchedule) => {
+    setSchedule(newSchedule);
+  };
   
   // Update assignments based on week
   useEffect(() => {
@@ -154,6 +162,11 @@ const Dashboard = () => {
     return chores.filter(chore => chore.category === activeCategory);
   }, [chores, activeCategory]);
   
+  // Show schedule based on activeCategory
+  const showSchedule = useMemo(() => {
+    return activeCategory === 'schedule' || activeCategory === 'all';
+  }, [activeCategory]);
+  
   // Group chores by status for display
   const pendingChores = useMemo(() => 
     filteredChores.filter(chore => chore.status === 'pending'),
@@ -170,118 +183,125 @@ const Dashboard = () => {
   
   return (
     <Layout onCategoryChange={setActiveCategory}>
-      <div className="space-y-6">
-        {/* Header Section */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              {activeCategory === 'all' ? 'All Chores' : 
-               activeCategory === 'mat' ? 'Food Chores' :
-               activeCategory === 'tvatt' ? 'Laundry Chores' :
-               activeCategory === 'stad' ? 'Cleaning Chores' :
-               activeCategory === 'sickan' ? 'Sickan Chores' :
-               activeCategory === 'major' ? 'Projects & Renovations' : 'Chores'}
-            </h1>
-            <p className="text-sm text-gray-700">
-              This week's responsible: <span className="font-medium text-purple-700">{weeklyUser?.name}</span>
-            </p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left column - Chores */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* User indicator */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div
+                className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold"
+                style={{ backgroundColor: users.find(user => user.id === currentUserId)?.color || '#cbd5e0' }}
+              >
+                {users.find(user => user.id === currentUserId)?.name.charAt(0) || '?'}
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Logged in as</p>
+                <p className="font-medium">{users.find(user => user.id === currentUserId)?.name || 'Unknown'}</p>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3 items-center">
+              <div className="px-3 py-1 bg-purple-100 rounded-full">
+                <span className="text-sm font-medium text-purple-700">{userPoints} points</span>
+              </div>
+              <button
+                onClick={handleSwitchUser}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors"
+              >
+                Switch User
+              </button>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <button 
-                className="px-4 py-2 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-sm flex items-center space-x-2"
-                onClick={handleSwitchUser}
+          {/* Chores List */}
+          <div className="space-y-1">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-800">This Week's Chores</h2>
+              <button
+                onClick={() => setShowAddChoreForm(true)}
+                className="px-3 py-2 bg-purple-100 hover:bg-purple-200 rounded-md text-sm font-medium text-purple-700 transition-colors"
               >
-                <img 
-                  src={users.find(u => u.id === currentUserId)?.avatar} 
-                  alt="User avatar" 
-                  className="w-5 h-5 rounded-full"
-                />
-                <span className="font-medium">{users.find(u => u.id === currentUserId)?.name}</span>
-                <span className="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                  {userPoints} p
-                </span>
+                Add Chore
               </button>
             </div>
             
-            <button 
-              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 transition-colors text-sm font-medium flex items-center"
-              onClick={() => setShowAddChoreForm(true)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add Chore
-            </button>
-          </div>
-        </div>
-        
-        {/* Chores grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ChoresList 
-            title="Pending Chores" 
-            chores={pendingChores} 
-            users={users}
-            onComplete={handleCompleteChore}
-            onDelete={handleDeleteChore}
-          />
-          
-          <ChoresList 
-            title="Completed Chores" 
-            chores={completedChores} 
-            users={users}
-            onComplete={handleCompleteChore}
-            onDelete={handleDeleteChore}
-          />
-        </div>
-
-        {/* Rewards column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Belöningar
-            </h3>
-            <button
-              onClick={() => setShowAddRewardForm(!showAddRewardForm)}
-              className="flex items-center px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
-            >
-              {showAddRewardForm ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Avbryt
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Lägg till belöning
-                </>
-              )}
-            </button>
-          </div>
-          
-          {showAddRewardForm ? (
-            <AddRewardForm 
-              onAddReward={handleAddReward} 
-              onCancel={() => setShowAddRewardForm(false)} 
-            />
-          ) : (
-            <RewardsList
-              rewards={rewards}
+            <ChoresList
+              chores={filteredChores}
               users={users}
               currentUserId={currentUserId}
-              userPoints={userPoints}
-              onClaim={handleClaimReward}
-              onDelete={handleDeleteReward}
+              onCompleteChore={handleCompleteChore}
+              onDeleteChore={handleDeleteChore}
+            />
+          </div>
+          
+          {/* Pet Schedule - NEW COMPONENT */}
+          {showSchedule && (
+            <PetSchedule
+              schedule={schedule}
+              users={users}
+              currentUserId={currentUserId}
+              onUpdateSchedule={handleUpdateSchedule}
             />
           )}
+          
+          {/* Chat section */}
+          <Chat
+            messages={messages}
+            users={users}
+            currentUserId={currentUserId}
+            onSendMessage={handleSendMessage}
+          />
+        </div>
+        
+        {/* Right column - Rewards */}
+        <div className="space-y-6">
+          <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Belöningar
+              </h3>
+              <button
+                onClick={() => setShowAddRewardForm(!showAddRewardForm)}
+                className="flex items-center px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+              >
+                {showAddRewardForm ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Avbryt
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Lägg till belöning
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {showAddRewardForm ? (
+              <AddRewardForm 
+                onAddReward={handleAddReward} 
+                onCancel={() => setShowAddRewardForm(false)} 
+              />
+            ) : (
+              <RewardsList
+                rewards={rewards}
+                users={users}
+                currentUserId={currentUserId}
+                userPoints={userPoints}
+                onClaim={handleClaimReward}
+                onDelete={handleDeleteReward}
+              />
+            )}
+          </div>
         </div>
       </div>
       
@@ -308,16 +328,6 @@ const Dashboard = () => {
             onCancel={() => setShowAddChoreForm(false)} 
           />
         )}
-      </div>
-
-      {/* Chat section */}
-      <div className="mt-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-5 border border-gray-200 animate-fade-in chat-container">
-        <Chat
-          messages={messages}
-          users={users}
-          currentUserId={currentUserId}
-          onSendMessage={handleSendMessage}
-        />
       </div>
 
       <div className="text-sm text-purple-700">
