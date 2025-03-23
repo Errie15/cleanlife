@@ -16,11 +16,24 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
   
   // Format the completion date if it exists
   const formattedDate = completedAt ? new Date(completedAt).toLocaleDateString('sv-SE') : '';
+
+  // Get user color based on ID (blue for user 1, pink for user 2)
+  const getUserColor = (userId) => {
+    return userId === users[0].id ? 'blue' : 'pink';
+  };
+
+  const userColor = getUserColor(assignedTo);
+  const userColorClasses = {
+    blue: 'bg-blue-100 text-blue-800 border-blue-200',
+    pink: 'bg-pink-100 text-pink-800 border-pink-200'
+  };
   
   return (
     <div 
-      className={`bg-white rounded-lg border ${isCompleted ? 'border-green-200' : 'border-gray-200'} 
-      transition-all duration-200 ${isCompleted ? 'opacity-80' : 'hover:shadow-md hover-lift'}`}
+      className={`bg-white rounded-lg shadow-sm hover:shadow-md 
+      ${isCompleted ? 'border-l-4 border-l-green-400 border-t border-r border-b border-gray-200' : 
+      `border-l-4 ${userColor === 'blue' ? 'border-l-blue-400' : 'border-l-pink-400'} border-t border-r border-b border-gray-200`}
+      transition-all duration-200 ${isCompleted ? 'opacity-80' : 'hover-lift'}`}
     >
       <div className="p-4">
         <div className="flex justify-between items-start">
@@ -29,8 +42,8 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             <div className="flex flex-wrap gap-2 my-2">
               <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                 category === CATEGORY.DAILY 
-                  ? 'bg-primary-100 text-primary-800' 
-                  : 'bg-secondary-100 text-secondary-800'
+                  ? 'bg-indigo-100 text-indigo-800' 
+                  : 'bg-purple-100 text-purple-800'
               }`}>
                 {category === CATEGORY.DAILY ? 'Vardaglig' : 'Större uppgift'}
               </span>
@@ -42,7 +55,7 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
               </span>
               
               {isMajorTask && points && (
-                <span className="px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium flex items-center">
+                <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-medium flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -60,10 +73,12 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             {assignedUser && (
               <div className="flex items-center mt-2">
                 <div 
-                  className="w-3 h-3 rounded-full mr-2" 
-                  style={{ backgroundColor: assignedUser.color }}
-                ></div>
-                <span className="text-sm text-gray-600">{assignedUser.name}</span>
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${userColorClasses[userColor]}`}
+                  title={`Tilldelad till ${assignedUser.name}`}
+                >
+                  {assignedUser.name.charAt(0)}
+                </div>
+                <span className="text-xs text-gray-500 ml-2">{assignedUser.name}</span>
               </div>
             )}
           </div>
@@ -72,10 +87,10 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             {!isCompleted && (
               <button
                 onClick={() => onComplete(id)}
-                className="p-2 bg-green-500 hover:bg-green-600 text-gray-100 rounded-lg text-sm transition-colors flex items-center justify-center"
-                title="Markera som klar"
+                className="p-1.5 rounded-full bg-green-100 text-green-700 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                title="Markera som slutförd"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </button>
@@ -83,25 +98,16 @@ const ChoreCard = ({ chore, users, onComplete, onDelete }) => {
             
             <button
               onClick={() => onDelete(id)}
-              className="p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm transition-colors flex items-center justify-center"
+              className="p-1.5 rounded-full bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
               title="Ta bort"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
           </div>
         </div>
       </div>
-      
-      {isCompleted && (
-        <div className="bg-green-50 p-2 rounded-b-lg border-t border-green-200 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-xs font-medium text-green-800">Slutfört</span>
-        </div>
-      )}
     </div>
   );
 };

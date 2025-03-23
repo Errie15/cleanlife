@@ -155,22 +155,22 @@ const Dashboard = () => {
   
   return (
     <Layout>
-      <div className="mb-6 bg-white rounded-xl shadow-card p-5 border border-gray-100">
+      <div className="mb-6 bg-white rounded-xl shadow-sm hover:shadow transition-shadow duration-300 p-5 border border-gray-200">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">
+            <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-indigo-600">
               Hej, {currentUser?.name || 'Användare'}
             </h2>
             <div className="flex items-center mt-1">
-              <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: currentUser?.color }}></div>
+              <div className={`w-4 h-4 rounded-full mr-2 ${currentUserId === users[0].id ? 'bg-blue-500' : 'bg-pink-500'}`}></div>
               <p className="text-base text-gray-700">
                 Det är {weeklyUser.id === currentUserId ? 'din' : weeklyUser.name + 's'} vecka
               </p>
             </div>
             
-            <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+            <div className="mt-2 inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-amber-100 text-amber-800 shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               {userPoints} poäng
             </div>
@@ -178,7 +178,7 @@ const Dashboard = () => {
           
           <button
             onClick={handleSwitchUser}
-            className="flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium transition-colors shadow-sm hover-lift"
+            className="flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -188,19 +188,19 @@ const Dashboard = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Weekly chores column */}
-        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-indigo-50 to-white">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-gray-800 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-indigo-500 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              Veckans sysslor
+              Denna vecka
             </h3>
             <button
               onClick={() => setShowAddChoreForm(!showAddChoreForm)}
-              className="flex items-center px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-gray-100 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
             >
               {showAddChoreForm ? (
                 <>
@@ -237,12 +237,12 @@ const Dashboard = () => {
         </div>
         
         {/* Completed chores column */}
-        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-green-50 to-white">
           <div className="flex items-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <h3 className="text-xl font-semibold text-gray-800">Klara sysslor</h3>
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-green-500">Klara uppgifter</h3>
           </div>
           <ChoresList
             title="Färdiga"
@@ -253,18 +253,18 @@ const Dashboard = () => {
           />
         </div>
         
-        {/* Rewards column */}
-        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+        {/* Rewards & Major tasks column */}
+        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-gray-800 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Belöningar & Större uppgifter
+              Djup städning
             </h3>
             <button
               onClick={() => setShowAddRewardForm(!showAddRewardForm)}
-              className="flex items-center px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-gray-100 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
             >
               {showAddRewardForm ? (
                 <>
@@ -321,7 +321,7 @@ const Dashboard = () => {
       </div>
       
       {/* Chat section */}
-      <div className="mt-6 bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+      <div className="mt-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-5 border border-gray-200 animate-fade-in chat-container">
         <Chat
           messages={messages}
           users={users}
