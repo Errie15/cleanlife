@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useDexieStorage from '../hooks/useDexieStorage';
 import { CATEGORY } from '../models/chores';
+import { DB_TABLES } from '../utils/database';
 
 /**
  * ProjectDecisionMaker component
@@ -9,7 +10,7 @@ import { CATEGORY } from '../models/chores';
  */
 const ProjectDecisionMaker = ({ chores }) => {
   // Store the selected projects for this decision session
-  const [selectedProjects, setSelectedProjects] = useLocalStorage('cleanlife_selected_projects', ['', '']);
+  const [selectedProjects, setSelectedProjects, projectsLoading] = useDexieStorage(DB_TABLES.SELECTED_PROJECTS, ['', '']);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [result, setResult] = useState(null);
@@ -19,6 +20,15 @@ const ProjectDecisionMaker = ({ chores }) => {
   
   // Filter major projects from the chores list
   const majorProjects = chores ? chores.filter(chore => chore.category === CATEGORY.MAJOR) : [];
+  
+  // Om data fortfarande laddas, visa en laddningsindikator
+  if (projectsLoading) {
+    return (
+      <div className="bg-sky-100 p-4 rounded-lg mb-6">
+        <div className="text-center text-primary">Laddar projektväljardata...</div>
+      </div>
+    );
+  }
   
   // Handle adding a project option
   const handleAddProject = () => {

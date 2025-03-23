@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useDexieStorage from '../hooks/useDexieStorage';
 import useNotifications from '../hooks/useNotifications';
 import { sampleChores, getAssignedUser, CATEGORY } from '../models/chores';
 import { sampleUsers } from '../models/users';
 import { sampleMessages, addMessage } from '../models/messages';
 import { sampleSchedule, DAYS_OF_WEEK, TIME_SLOTS } from '../models/schedule';
 import { getUserPoints } from '../models/users';
+import { DB_TABLES } from '../utils/database';
 
 import Layout from './Layout';
 import ChoresList from './ChoresList';
@@ -16,15 +17,15 @@ import ProjectDecisionMaker from './ProjectDecisionMaker';
 
 // Main dashboard component
 const Dashboard = () => {
-  // State from localStorage
-  const [users, setUsers] = useLocalStorage('cleanlife_users', sampleUsers);
-  const [chores, setChores] = useLocalStorage('cleanlife_chores', sampleChores);
-  const [messages, setMessages] = useLocalStorage('cleanlife_messages', sampleMessages);
-  const [schedule, setSchedule] = useLocalStorage('cleanlife_schedule', sampleSchedule);
+  // State från Dexie/IndexedDB
+  const [users, setUsers, usersLoading] = useDexieStorage(DB_TABLES.USERS, sampleUsers);
+  const [chores, setChores, choresLoading] = useDexieStorage(DB_TABLES.CHORES, sampleChores);
+  const [messages, setMessages, messagesLoading] = useDexieStorage(DB_TABLES.MESSAGES, sampleMessages);
+  const [schedule, setSchedule, scheduleLoading] = useDexieStorage(DB_TABLES.SCHEDULE, sampleSchedule);
   
   // UI state
   const [showAddChoreForm, setShowAddChoreForm] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(users[0]?.id);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   
   // Notifications
@@ -209,6 +210,25 @@ const Dashboard = () => {
       setSchedule(prev => [...prev, ...missingEntries]);
     }
   }, [schedule, DAYS_OF_WEEK, TIME_SLOTS, setSchedule]);
+  
+  // Sätt currentUserId när users har laddats
+  useEffect(() => {
+    if (!usersLoading && users && users.length > 0 && !currentUserId) {
+      setCurrentUserId(users[0]?.id);
+    }
+  }, [users, usersLoading, currentUserId]);
+
+  // Kontrollera om data fortfarande laddas
+  const isLoading = usersLoading || choresLoading || messagesLoading || scheduleLoading;
+
+  // Om data fortfarande laddas, visa en laddningsindikator
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-2xl font-bold text-primary">Laddar...</div>
+      </div>
+    );
+  }
   
   return (
     <Layout onCategoryChange={setActiveCategory}>

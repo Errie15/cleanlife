@@ -1,24 +1,45 @@
-import React, { useState } from 'react';
-import useLocalStorage from '../hooks/useLocalStorage';
+import React, { useState, useEffect } from 'react';
+import useDexieStorage from '../hooks/useDexieStorage';
 import { sampleRewards, claimReward } from '../models/rewards';
 import { sampleUsers } from '../models/users';
 import useNotifications from '../hooks/useNotifications';
 import Layout from './Layout';
 import AddRewardForm from './AddRewardForm';
+import { DB_TABLES } from '../utils/database';
 
 // Component to display rewards in three columns format
 const Rewards = () => {
-  // State from localStorage
-  const [rewards, setRewards] = useLocalStorage('cleanlife_rewards', sampleRewards);
-  const [users, setUsers] = useLocalStorage('cleanlife_users', sampleUsers);
+  // State från Dexie/IndexedDB
+  const [rewards, setRewards, rewardsLoading] = useDexieStorage(DB_TABLES.REWARDS, sampleRewards);
+  const [users, setUsers, usersLoading] = useDexieStorage(DB_TABLES.USERS, sampleUsers);
   const [showAddRewardForm, setShowAddRewardForm] = useState(false);
   
   // Notifications
   const { notifyRewardClaimed } = useNotifications();
   
-  // Get user details
-  const erik = users.find(user => user.id === 'user1');
-  const linnea = users.find(user => user.id === 'user2');
+  // Användardetaljer - sätts när data har laddats
+  const [erik, setErik] = useState(null);
+  const [linnea, setLinnea] = useState(null);
+  
+  // Uppdatera användarreferenser när data har laddats
+  useEffect(() => {
+    if (!usersLoading && users && users.length > 0) {
+      setErik(users.find(user => user.id === 'user1'));
+      setLinnea(users.find(user => user.id === 'user2'));
+    }
+  }, [users, usersLoading]);
+  
+  // Kontrollera om data fortfarande laddas
+  const isLoading = usersLoading || rewardsLoading;
+
+  // Om data fortfarande laddas, visa en laddningsindikator
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-2xl font-bold text-primary">Laddar...</div>
+      </div>
+    );
+  }
   
   // Add a new reward
   const handleAddReward = (newReward) => {
