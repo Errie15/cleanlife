@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter var', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+    'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
 
+  /* Use system-level color preferences but with our own adjustments */
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #374151;  /* Darker gray for better readability */
+  background-color: #f9fafb;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,56 +17,74 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Improve default link styling */
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: #0284c7;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 a:hover {
-  color: #535bf2;
+  color: #0369a1;
+  text-decoration: underline;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: linear-gradient(to bottom right, #f0f9ff, #f9fafb);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* Better button defaults */
 button {
-  border-radius: 8px;
+  border-radius: 0.5rem;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #0ea5e9;
+  color: #f9fafb;  /* Changed from white to light gray for better contrast */
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #0284c7;
+  transform: translateY(-1px);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
 }
 
-@media (prefers-color-scheme: light) {
+/* Add smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark mode support with our colors */
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #e5e7eb;  /* Light gray instead of white */
+    background-color: #111827;
+  }
+  a {
+    color: #38bdf8;
   }
   a:hover {
-    color: #747bff;
+    color: #7dd3fc;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #0284c7;
+    color: #f3f4f6;  /* Light gray instead of white */
+  }
+  button:hover {
+    background-color: #0369a1;
   }
 }
+
+/* Load Inter font */
+@import url('https://rsms.me/inter/inter.css');

@@ -17,7 +17,7 @@ const RewardCard = ({ reward, users, currentUserId, userPoints, onClaim, onDelet
     <div className={`bg-white rounded-lg shadow-md p-4 mb-3 ${claimedBy ? 'opacity-50' : ''}`}>
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="font-semibold text-lg">{name}</h3>
+          <h3 className="font-semibold text-lg text-gray-800">{name}</h3>
           <div className="my-2">
             <span className="px-2 py-1 rounded bg-yellow-100 text-yellow-800 text-xs">
               {pointsCost} poäng
@@ -37,7 +37,7 @@ const RewardCard = ({ reward, users, currentUserId, userPoints, onClaim, onDelet
               onClick={() => onClaim(id, currentUserId)}
               className={`px-3 py-1 rounded-md text-sm ${
                 hasEnoughPoints 
-                  ? 'bg-green-500 hover:bg-green-600 text-white' 
+                  ? 'bg-green-500 hover:bg-green-600 text-gray-100' 
                   : 'bg-gray-300 text-gray-600 cursor-not-allowed'
               }`}
               disabled={!hasEnoughPoints}

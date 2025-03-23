@@ -155,34 +155,68 @@ const Dashboard = () => {
   
   return (
     <Layout>
-      <div className="mb-4 flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Hej, {currentUser?.name || 'Användare'}
-          </h2>
-          <p className="text-sm text-gray-600">
-            Det är {weeklyUser.id === currentUserId ? 'din' : weeklyUser.name + 's'} vecka
-          </p>
+      <div className="mb-6 bg-white rounded-xl shadow-card p-5 border border-gray-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800">
+              Hej, {currentUser?.name || 'Användare'}
+            </h2>
+            <div className="flex items-center mt-1">
+              <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: currentUser?.color }}></div>
+              <p className="text-base text-gray-700">
+                Det är {weeklyUser.id === currentUserId ? 'din' : weeklyUser.name + 's'} vecka
+              </p>
+            </div>
+            
+            <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {userPoints} poäng
+            </div>
+          </div>
+          
+          <button
+            onClick={handleSwitchUser}
+            className="flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium transition-colors shadow-sm hover-lift"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            Byt användare
+          </button>
         </div>
-        
-        <button
-          onClick={handleSwitchUser}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md text-sm font-medium"
-        >
-          Byt användare
-        </button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Weekly chores column */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-gray-700">Veckans sysslor</h3>
+        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Veckans sysslor
+            </h3>
             <button
               onClick={() => setShowAddChoreForm(!showAddChoreForm)}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+              className="flex items-center px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-gray-100 rounded-lg text-sm font-medium transition-colors"
             >
-              {showAddChoreForm ? 'Avbryt' : 'Lägg till'}
+              {showAddChoreForm ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Avbryt
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Lägg till
+                </>
+              )}
             </button>
           </div>
           
@@ -203,8 +237,13 @@ const Dashboard = () => {
         </div>
         
         {/* Completed chores column */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Klara sysslor</h3>
+        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+          <div className="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-xl font-semibold text-gray-800">Klara sysslor</h3>
+          </div>
           <ChoresList
             title="Färdiga"
             chores={completedChores}
@@ -215,14 +254,33 @@ const Dashboard = () => {
         </div>
         
         {/* Rewards column */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-gray-700">Belöningar & Större uppgifter</h3>
+        <div className="bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Belöningar & Större uppgifter
+            </h3>
             <button
               onClick={() => setShowAddRewardForm(!showAddRewardForm)}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+              className="flex items-center px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-gray-100 rounded-lg text-sm font-medium transition-colors"
             >
-              {showAddRewardForm ? 'Avbryt' : 'Lägg till belöning'}
+              {showAddRewardForm ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Avbryt
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Lägg till belöning
+                </>
+              )}
             </button>
           </div>
           
@@ -241,7 +299,13 @@ const Dashboard = () => {
                 onDelete={handleDeleteChore}
               />
               
-              <div className="mt-4">
+              <div className="mt-5">
+                <div className="flex items-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                  <h4 className="text-lg font-medium text-gray-800">Belöningar</h4>
+                </div>
                 <RewardsList
                   rewards={rewards}
                   users={users}
@@ -257,7 +321,7 @@ const Dashboard = () => {
       </div>
       
       {/* Chat section */}
-      <div className="mt-6">
+      <div className="mt-6 bg-white rounded-xl shadow-card p-5 border border-gray-100 animate-fade-in">
         <Chat
           messages={messages}
           users={users}
