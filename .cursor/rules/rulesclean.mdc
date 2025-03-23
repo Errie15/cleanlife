@@ -6,23 +6,32 @@ alwaysApply: true
 
 # CleanLife Project Rules
 
-🧠 Agent Development Rules
 🤖 Start every reply with a robotic emoji.
 
-📦 Keep all code modular. Avoid defining functions inside page components unless absolutely necessary—extract to separate files for reuse. If unsure, ask first.
+---
 
-📏 Prefer files under 200 lines. If it exceeds that, ask whether parts can be extracted into shared functions or components.
+Keep all code modular. Avoid defining functions inside page components unless absolutely necessary—extract to separate files for reuse. If unsure, ask first.
 
-🧬 Follow best practices for clean, maintainable code.
+---
 
-🎨 Text Contrast Rule:
+Prefer files under 200 lines. If it exceeds that, ask whether parts can be extracted into shared functions or components.
+
+---
+
+Follow best practices for clean, maintainable code.
+
+---
 
 Never use low-contrast text. All text—including titles, text, placeholders, dropdowns, labels, and buttons—must be clearly readable against its background at all times. If unsure, increase contrast or ask.
 
-🗣️ All text in the app must be in Swedish.
+---
 
-💬 Always ask a clarifying question in your response before you start coding or acting, even if the instructions seem clear.
+All text in the app must be in Swedish.
 
+---
 
+Always ask a clarifying question in your response before you start coding or acting, even if the instructions seem clear.
 
-🗂️ For all GitHub operations, refer to the github-guidelines.md in the root directory.
+---
+
+For all GitHub operations, refer to the github-guidelines.md in the root directory.

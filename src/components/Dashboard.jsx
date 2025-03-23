@@ -12,6 +12,7 @@ import ChoresList from './ChoresList';
 import AddChoreForm from './AddChoreForm';
 import Chat from './Chat';
 import PetSchedule from './PetSchedule';
+import ProjectDecisionMaker from './ProjectDecisionMaker';
 
 // Main dashboard component
 const Dashboard = () => {
@@ -129,6 +130,11 @@ const Dashboard = () => {
     return activeCategory === 'sickan' || activeCategory === 'all';
   }, [activeCategory]);
   
+  // Show project decision maker based on activeCategory
+  const showProjectDecisionMaker = useMemo(() => {
+    return activeCategory === 'major';
+  }, [activeCategory]);
+  
   // Group chores by status for display
   const pendingChores = useMemo(() => 
     filteredChores.filter(chore => chore.status === 'pending'),
@@ -231,6 +237,11 @@ const Dashboard = () => {
               </button>
             </div>
           </div>
+          
+          {/* Project Decision Maker */}
+          {showProjectDecisionMaker && (
+            <ProjectDecisionMaker chores={chores} />
+          )}
           
           {/* Chores List */}
           {showChoresList && (
