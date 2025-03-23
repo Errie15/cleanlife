@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 // API-URL konfiguration - ändra baserat på deployment-miljö
 const getApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
-    return 'https://cleanlife-api.vercel.app'; // Produktions-URL (när du deployar API:et)
+    return 'https://cleanlife-db.vercel.app'; // Faktiska produktions-URL för API:et
   }
   
   // I utvecklingsläge börjar vi med port 3001
