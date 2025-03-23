@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import useNotifications from '../hooks/useNotifications';
 import { sampleChores, getAssignedUser, CATEGORY } from '../models/chores';
@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [showAddChoreForm, setShowAddChoreForm] = useState(false);
   const [showAddRewardForm, setShowAddRewardForm] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(users[0]?.id);
+  const [activeCategory, setActiveCategory] = useState('all');
   
   // Notifications
   const { notifyChoreCompleted, notifyRewardClaimed } = useNotifications();
@@ -145,146 +146,96 @@ const Dashboard = () => {
     setMessages(updatedMessages);
   };
   
-  // Filter chores by status and type
-  const pendingDailyChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.DAILY);
-  const completedChores = chores.filter(chore => chore.status === 'completed');
-  const majorChores = chores.filter(chore => chore.category === CATEGORY.MAJOR && chore.status === 'pending');
+  // Filter chores based on activeCategory
+  const filteredChores = useMemo(() => {
+    if (activeCategory === 'all') {
+      return chores;
+    }
+    return chores.filter(chore => chore.category === activeCategory);
+  }, [chores, activeCategory]);
   
-  // Filter chores by new categories
-  const matChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.MAT);
-  const stadChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.STAD);
-  const tvattChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.TVATT);
-  const sickanChores = chores.filter(chore => chore.status === 'pending' && chore.category === CATEGORY.SICKAN);
+  // Group chores by status for display
+  const pendingChores = useMemo(() => 
+    filteredChores.filter(chore => chore.status === 'pending'),
+    [filteredChores]
+  );
+  
+  const completedChores = useMemo(() => 
+    filteredChores.filter(chore => chore.status === 'completed'),
+    [filteredChores]
+  );
   
   // Get current user
   const currentUser = users.find(user => user.id === currentUserId);
   
   return (
-    <Layout>
-      <div className="mb-6 bg-white rounded-xl shadow-sm hover:shadow transition-shadow duration-300 p-5 border border-gray-200">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <Layout onCategoryChange={setActiveCategory}>
+      <div className="space-y-6">
+        {/* Header Section */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-indigo-600">
-              Hej, {currentUser?.name || 'Användare'}
-            </h2>
-            <div className="flex items-center mt-1">
-              <div className={`w-4 h-4 rounded-full mr-2 ${currentUserId === users[0].id ? 'bg-blue-500' : 'bg-pink-500'}`}></div>
-              <p className="text-base text-gray-700">
-                Det är {weeklyUser.id === currentUserId ? 'din' : weeklyUser.name + 's'} vecka
-              </p>
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">
+              {activeCategory === 'all' ? 'All Chores' : 
+               activeCategory === 'mat' ? 'Food Chores' :
+               activeCategory === 'tvatt' ? 'Laundry Chores' :
+               activeCategory === 'stad' ? 'Cleaning Chores' :
+               activeCategory === 'sickan' ? 'Sickan Chores' :
+               activeCategory === 'major' ? 'Projects & Renovations' : 'Chores'}
+            </h1>
+            <p className="text-sm text-gray-600">
+              This week's responsible: <span className="font-medium text-purple-700">{weeklyUser?.name}</span>
+            </p>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <button 
+                className="px-4 py-2 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-sm flex items-center space-x-2"
+                onClick={handleSwitchUser}
+              >
+                <img 
+                  src={users.find(u => u.id === currentUserId)?.avatar} 
+                  alt="User avatar" 
+                  className="w-5 h-5 rounded-full"
+                />
+                <span className="font-medium">{users.find(u => u.id === currentUserId)?.name}</span>
+                <span className="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {userPoints} p
+                </span>
+              </button>
             </div>
             
-            <div className="mt-2 inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-amber-100 text-amber-800 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <button 
+              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 transition-colors text-sm font-medium flex items-center"
+              onClick={() => setShowAddChoreForm(true)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              {userPoints} poäng
-            </div>
+              Add Chore
+            </button>
           </div>
-          
-          <button
-            onClick={handleSwitchUser}
-            className="flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-            Byt användare
-          </button>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Mat column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-amber-50 to-white">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-500 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              Mat
-            </h3>
-          </div>
-          
-          <ChoresList
-            title="Matuppgifter"
-            chores={matChores}
-            users={users}
-            onComplete={handleCompleteChore}
-            onDelete={handleDeleteChore}
-          />
         </div>
         
-        {/* Städ column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-blue-50 to-white">
-          <div className="flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-500">Städ</h3>
-          </div>
-          <ChoresList
-            title="Städuppgifter"
-            chores={stadChores}
+        {/* Chores grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ChoresList 
+            title="Pending Chores" 
+            chores={pendingChores} 
             users={users}
             onComplete={handleCompleteChore}
             onDelete={handleDeleteChore}
           />
-        </div>
-        
-        {/* Tvätt column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-indigo-50 to-white">
-          <div className="flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-            </svg>
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-indigo-500">Tvätt</h3>
-          </div>
-          <ChoresList
-            title="Tvättuppgifter"
-            chores={tvattChores}
-            users={users}
-            onComplete={handleCompleteChore}
-            onDelete={handleDeleteChore}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {/* Sickan column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-pink-50 to-white">
-          <div className="flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-700 to-pink-500">Sickan Morgon</h3>
-          </div>
-          <ChoresList
-            title="Morgonrutiner"
-            chores={sickanChores}
+          
+          <ChoresList 
+            title="Completed Chores" 
+            chores={completedChores} 
             users={users}
             onComplete={handleCompleteChore}
             onDelete={handleDeleteChore}
           />
         </div>
 
-        {/* Completed chores column */}
-        <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-green-50 to-white">
-          <div className="flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-green-500">Klara uppgifter</h3>
-          </div>
-          <ChoresList
-            title="Färdiga"
-            chores={completedChores}
-            users={users}
-            onComplete={handleCompleteChore}
-            onDelete={handleDeleteChore}
-          />
-        </div>
-        
         {/* Rewards column */}
         <div className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-gradient-to-b from-purple-50 to-white">
           <div className="flex justify-between items-center mb-4">

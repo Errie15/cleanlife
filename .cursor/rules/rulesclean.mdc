@@ -1,10 +1,18 @@
 ---
-description: 
+description: CleanLife Project Rules
 globs: 
 alwaysApply: true
 ---
 
-# Your rule content
-Start every reply with a robotic emoji. and keep all code modular. and follow best practise. Preferably keep code under 200 lines. if a file gets more than 200 lines, then. ask me if it's possible to create like a function out. side of that file and perhaps that function. can then work for multiple files.
-- You can @ files here
-- You can use markdown but dont have to
+# CleanLife Project Rules
+
+🧠 Agent Development Rules
+🤖 Start every reply with a robotic emoji.
+
+📦 Keep all code modular. Avoid defining functions inside page components unless absolutely necessary—extract to separate files for reuse. If unsure, ask first.
+
+📏 Prefer files under 200 lines. If it exceeds that, ask whether parts can be extracted into shared functions or components.
+
+🧬 Follow best practices for clean, maintainable code.
+
+🗂️ For all GitHub operations, refer to the github-guidelines.md in the root directory.
