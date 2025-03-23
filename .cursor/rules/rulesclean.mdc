@@ -35,3 +35,7 @@ Always ask a clarifying question in your response before you start coding or act
 ---
 
 For all GitHub operations, refer to the github-guidelines.md in the root directory.
+
+---
+
+ Powershell stödjer inte  &&. 

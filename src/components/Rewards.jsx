@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import useDexieStorage from '../hooks/useDexieStorage';
+import useApi from '../hooks/useApi';
 import { sampleRewards, claimReward } from '../models/rewards';
 import { sampleUsers } from '../models/users';
 import useNotifications from '../hooks/useNotifications';
 import Layout from './Layout';
 import AddRewardForm from './AddRewardForm';
-import { DB_TABLES } from '../utils/database';
 
 // Component to display rewards in three columns format
 const Rewards = () => {
-  // State från Dexie/IndexedDB
-  const [rewards, setRewards, rewardsLoading] = useDexieStorage(DB_TABLES.REWARDS, sampleRewards);
-  const [users, setUsers, usersLoading] = useDexieStorage(DB_TABLES.USERS, sampleUsers);
+  // State från API
+  const [rewards, setRewards, rewardsLoading, rewardsError] = useApi('/api/rewards', sampleRewards);
+  const [users, setUsers, usersLoading, usersError] = useApi('/api/users', sampleUsers);
   const [showAddRewardForm, setShowAddRewardForm] = useState(false);
   
   // Notifications
@@ -31,12 +30,30 @@ const Rewards = () => {
   
   // Kontrollera om data fortfarande laddas
   const isLoading = usersLoading || rewardsLoading;
+  const hasError = usersError || rewardsError;
 
   // Om data fortfarande laddas, visa en laddningsindikator
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-2xl font-bold text-primary">Laddar...</div>
+      </div>
+    );
+  }
+  
+  // Om det finns fel, visa felmeddelande
+  if (hasError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-2xl font-bold text-red-500">
+          Ett fel uppstod vid laddning av data.<br/>
+          <button 
+            className="mt-4 bg-primary text-white px-4 py-2 rounded"
+            onClick={() => window.location.reload()}
+          >
+            Försök igen
+          </button>
+        </div>
       </div>
     );
   }

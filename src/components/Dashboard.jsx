@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import useDexieStorage from '../hooks/useDexieStorage';
+import useApi from '../hooks/useApi';
 import useNotifications from '../hooks/useNotifications';
 import { sampleChores, getAssignedUser, CATEGORY } from '../models/chores';
 import { sampleUsers } from '../models/users';
 import { sampleMessages, addMessage } from '../models/messages';
 import { sampleSchedule, DAYS_OF_WEEK, TIME_SLOTS } from '../models/schedule';
 import { getUserPoints } from '../models/users';
-import { DB_TABLES } from '../utils/database';
 
 import Layout from './Layout';
 import ChoresList from './ChoresList';
@@ -17,11 +16,11 @@ import ProjectDecisionMaker from './ProjectDecisionMaker';
 
 // Main dashboard component
 const Dashboard = () => {
-  // State från Dexie/IndexedDB
-  const [users, setUsers, usersLoading] = useDexieStorage(DB_TABLES.USERS, sampleUsers);
-  const [chores, setChores, choresLoading] = useDexieStorage(DB_TABLES.CHORES, sampleChores);
-  const [messages, setMessages, messagesLoading] = useDexieStorage(DB_TABLES.MESSAGES, sampleMessages);
-  const [schedule, setSchedule, scheduleLoading] = useDexieStorage(DB_TABLES.SCHEDULE, sampleSchedule);
+  // State från API
+  const [users, setUsers, usersLoading, usersError] = useApi('/api/users', sampleUsers);
+  const [chores, setChores, choresLoading, choresError] = useApi('/api/chores', sampleChores);
+  const [messages, setMessages, messagesLoading, messagesError] = useApi('/api/messages', sampleMessages);
+  const [schedule, setSchedule, scheduleLoading, scheduleError] = useApi('/api/schedule', sampleSchedule);
   
   // UI state
   const [showAddChoreForm, setShowAddChoreForm] = useState(false);
@@ -220,12 +219,30 @@ const Dashboard = () => {
 
   // Kontrollera om data fortfarande laddas
   const isLoading = usersLoading || choresLoading || messagesLoading || scheduleLoading;
+  const hasError = usersError || choresError || messagesError || scheduleError;
 
   // Om data fortfarande laddas, visa en laddningsindikator
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-2xl font-bold text-primary">Laddar...</div>
+      </div>
+    );
+  }
+  
+  // Om det finns fel, visa felmeddelande
+  if (hasError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-2xl font-bold text-red-500">
+          Ett fel uppstod vid laddning av data.<br/>
+          <button 
+            className="mt-4 bg-primary text-white px-4 py-2 rounded"
+            onClick={() => window.location.reload()}
+          >
+            Försök igen
+          </button>
+        </div>
       </div>
     );
   }

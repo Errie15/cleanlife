@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useDexieStorage from '../hooks/useDexieStorage';
+import useApi from '../hooks/useApi';
 import { CATEGORY } from '../models/chores';
-import { DB_TABLES } from '../utils/database';
 
 /**
  * ProjectDecisionMaker component
@@ -10,7 +9,7 @@ import { DB_TABLES } from '../utils/database';
  */
 const ProjectDecisionMaker = ({ chores }) => {
   // Store the selected projects for this decision session
-  const [selectedProjects, setSelectedProjects, projectsLoading] = useDexieStorage(DB_TABLES.SELECTED_PROJECTS, ['', '']);
+  const [selectedProjects, setSelectedProjects, projectsLoading, projectsError] = useApi('/api/selected-projects', ['', '']);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [result, setResult] = useState(null);
@@ -26,6 +25,17 @@ const ProjectDecisionMaker = ({ chores }) => {
     return (
       <div className="bg-sky-100 p-4 rounded-lg mb-6">
         <div className="text-center text-primary">Laddar projektväljardata...</div>
+      </div>
+    );
+  }
+  
+  // Om det finns fel, visa felmeddelande
+  if (projectsError) {
+    return (
+      <div className="bg-pink-100 p-4 rounded-lg mb-6">
+        <div className="text-center text-red-500">
+          Kunde inte ladda projektdata. Försök igen senare.
+        </div>
       </div>
     );
   }
